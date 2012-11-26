@@ -37,11 +37,11 @@ namespace Talker
 				int userNumber = userNamer.Next(0, 300);
 
 				User UserObj = new User(client, userNumber);
+				UserObj.Logon = DateTime.UtcNow;
 
 				Server.ClientList.Add(UserObj);
 				clientThread.Start(UserObj);
-
-				UserObj.WriteLine("User connected: " + userNumber);
+				UserObj.WriteLine("[Entering is: " + UserObj.Name + " " + UserObj.Desc + " ] ");
 			}
 		}
 
@@ -68,7 +68,9 @@ namespace Talker
 				if(userInput.StartsWith(".")) {
 					string userCommandText = userInput.Remove(0,1);
 					string[] userCommands = userCommandText.Split(' ');
-					string userMessage = userInput.Remove(0, userInput.IndexOf(' '));
+					int userInputStart = userInput.IndexOf(' ');
+					userInputStart = ( userInputStart>= 0) ? userInputStart : 0; //make sure the index is above 0
+					string userMessage = userInput.Remove(0, userInputStart);
 
 					switch(userCommands[0].ToLower()) {
 						case "quit":
@@ -88,27 +90,56 @@ namespace Talker
 							userObj.Name = userCommands[1];
 							userObj.WriteLine("Your name has been changed to \"" + userObj.Name + "\"");
 						break;
+						case "desc":
+							if(userCommands.Length < 2) {
+								userObj.WriteLine(".desc <new description>");
+								break;
+							}
+						
+							userObj.Desc = userMessage;
+							userObj.WriteLine("Your description has been changed to \"" + userObj.Desc + "\"");
+						break;
 						case "tell":
 							if(userCommands.Length < 2) {
 								userObj.WriteLine(".tell <user> <message>");
 								break;
 							}
 
+							
 							string userTo = userMessage.Substring(0, userMessage.IndexOf(' '));
 							string messageTo = userMessage.Substring(userMessage.IndexOf(' '));
 
 							User userObjTo = Server.FindClientByName(userTo);	
 
 							if(userObjTo == null) {
-								userObj.WriteLine("No such user.");
+								userObj.WriteLine("No such named \"" + userTo + "\"user.");
 							} else {
 								userObj.WriteLine("you tell " + userTo + ": " + messageTo);
 								userObjTo.WriteLine(userObj.Name + " tells you:" + messageTo);
 							}
 						break;
+						case "who":
+							
+							userObj.WriteLine("+----------------------------------------------------------------------+");
+							userObj.WriteLine("|  Name      Description                                      |  Mins  |");
+							userObj.WriteLine("+----------------------------------------------------------------------+");
+						
+							string whoLines = "";
+						
+							DateTime commonTime = DateTime.UtcNow;
+						
+							foreach(User CurrentUser in Server.ClientList) {
+								TimeSpan minsOnline = commonTime - CurrentUser.Logon;
+							
+								whoLines += String.Format("| {0,-59} | {1,-6} |\n", CurrentUser.Name + CurrentUser.Desc, minsOnline.Minutes);
+							}
+
+							userObj.Write(whoLines);
+							userObj.WriteLine("+----------------------------------------------------------------------+");
+
+						break;
 						default:
-							userObj.WriteLine("You say: " + userInput);
-							Server.WriteAllBut( userObj.Name + " Says: " + userInput + "\n", new List<User>{ userObj});
+							userObj.WriteLine(userCommands[0] + " does not exist.");
 						break;
 					}
 				} else {

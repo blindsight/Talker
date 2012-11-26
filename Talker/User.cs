@@ -16,6 +16,7 @@ namespace Talker
 		{
 			client = clientConnection;
 			name = "User " + clientIndex;
+			this.Desc = " is a newbie needing a description. ";
 		}
 
 		public void Write(string clientText)
@@ -47,6 +48,16 @@ namespace Talker
 		public string Name {
 			get { return name; }
 			set { name = value; }
+		}
+
+		public string Desc {
+			get;
+			set;
+		}
+
+		public DateTime Logon {
+			get;
+			set;
 		}
 	}
 }
