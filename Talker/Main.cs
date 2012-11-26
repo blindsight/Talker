@@ -118,6 +118,14 @@ namespace Talker
 								userObjTo.WriteLine(userObj.Name + " tells you:" + messageTo);
 							}
 						break;
+						case "emote":
+							if(userCommands.Length < 2) {
+								userObj.WriteLine("Usage: emote <text>\n");
+								break;
+							}
+						
+							Server.WriteAll( userObj.Name + "" + userMessage);
+						break;
 						case "who":
 							
 							userObj.WriteLine("+----------------------------------------------------------------------+");
