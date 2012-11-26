@@ -86,7 +86,7 @@ namespace Talker
 							}
 
 							userObj.Name = userCommands[1];
-							userObj.WriteLine("Your name has been changed to " + userObj.Name);
+							userObj.WriteLine("Your name has been changed to \"" + userObj.Name + "\"");
 						break;
 						case "tell":
 							if(userCommands.Length < 2) {
@@ -100,7 +100,7 @@ namespace Talker
 							User userObjTo = Server.FindClientByName(userTo);	
 
 							if(userObjTo == null) {
-								userObj.WriteLine("No such user");
+								userObj.WriteLine("No such user.");
 							} else {
 								userObj.WriteLine("you tell " + userTo + ": " + messageTo);
 								userObjTo.WriteLine(userObj.Name + " tells you:" + messageTo);
