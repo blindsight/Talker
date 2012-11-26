@@ -92,7 +92,7 @@ namespace Talker
 						break;
 						case "desc":
 							if(userCommands.Length < 2) {
-								userObj.WriteLine(".desc <new description>");
+								userObj.WriteLine("Your current description is: " + userObj.Desc);
 								break;
 							}
 						
@@ -138,8 +138,23 @@ namespace Talker
 							userObj.WriteLine("+----------------------------------------------------------------------+");
 
 						break;
+						case "version":
+							userObj.WriteLine("+----------------------------------------------------------------------------+");
+							userObj.WriteLine("|                           Your Talker's Name Here                          |");
+							userObj.WriteLine("+----------------------------------------------------------------------------+");
+							userObj.WriteLine(String.Format("| Total number of users    : {0}                             |", Server.ClientList.Count));
+	/*| Logons this current boot :    1 new users,    1 old users                  |
+	| Total number of users    : 3     Maximum online users     : 50             |
+	| Total number of rooms    : 15    Swear ban currently on   : OFF            |
+	| Smail auto-forwarding on : YES   Auto purge on            : NO             |
+	| Maximum smail copies     : 6     Names can be recapped    : YES            |
+	| Personal rooms active    : YES   Maximum user idle time   : 60  mins       |*/
+							userObj.WriteLine("+----------------------------------------------------------------------------+");
+							userObj.WriteLine("| 0.0.1                                        (C) Timothy Rhodes 2012       |");
+							userObj.WriteLine("+----------------------------------------------------------------------------+");
+						break;
 						default:
-							userObj.WriteLine(userCommands[0] + " does not exist.");
+							userObj.WriteLine("Unknown command.");
 						break;
 					}
 				} else {
