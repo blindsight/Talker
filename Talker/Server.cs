@@ -12,7 +12,7 @@ namespace Talker
 
 		static Server()
 		{
-			//TODO: needs to be type safe
+			//TODO: needs to be thread safe
 			ClientList = new List<User>();
 			CommandList = new List<ICommand>();
 
@@ -23,11 +23,9 @@ namespace Talker
 				   && type.IsClass
 				   && type.GetInterface("ICommand") != null) {
 
-				   //type.GetInterfaces() ("ICommand")) {
 					ICommand newCommand = (ICommand)Activator.CreateInstance(type);
 
 					CommandList.Add(newCommand);
-					//CommandList.Add(ne
 				}
 			}
 		}

@@ -25,7 +25,6 @@ namespace Talker
 		private static void ListenForClients()
 		{
 			tcpListener.Start();
-			//clientList = new List<User>();
 
 			while (true) {
 				TcpClient client = tcpListener.AcceptTcpClient();
