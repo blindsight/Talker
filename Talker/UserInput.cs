@@ -12,7 +12,7 @@ namespace Talker
 			this.Args = this.Input.Split(' ');
 			this.InputStart = this.Input.IndexOf(' ');
 			this.InputStart = ( this.InputStart>= 0) ? this.InputStart : 0; //make sure the index is above 0
-			this.Message = this.Input.Remove(0, this.InputStart);
+			this.Message = this.Input.Remove(0, this.InputStart).Trim();
 			this.User = CurrentUser;
 		}
 
