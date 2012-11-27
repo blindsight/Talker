@@ -57,8 +57,14 @@ namespace Talker.Commands
 			if(userObjTo == null) {
 				CurrentInput.User.WriteLine("No such named \"" + userTo + "\"user.");
 			} else {
-				CurrentInput.User.WriteLine("you tell " + userTo + ": " + messageTo);
-				userObjTo.WriteLine(CurrentInput.User.Name + " tells you:" + messageTo);
+				string toMessage = String.Format("{0} tells you: {1}",CurrentInput.User.Name, messageTo);
+				string fromMessage = String.Format("you tell {0}: {1}", userTo, messageTo);
+
+				CurrentInput.User.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, fromMessage, userObjTo));
+				CurrentInput.User.WriteLine(fromMessage);
+
+				userObjTo.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, toMessage, CurrentInput.User));
+				userObjTo.WriteLine(toMessage);
 			}
 		}
 
@@ -66,6 +72,48 @@ namespace Talker.Commands
 		{
 			get {
 				return "tell";
+			}
+		}
+	}
+
+	public class RevTell : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			string output = "";
+
+			foreach (UserCommuncationBuffer CurrentBuffer in CurrentInput.User.TellBuffer) {
+				output += String.Format("[{0}] {1}\n", CurrentBuffer.Send.ToShortTimeString(), CurrentBuffer.Message);
+			}
+
+			if (CurrentInput.User.TellBuffer.Count <= 0) {
+				output += "\nRevtell buffer is empty.\n\n";
+			}
+
+			CurrentInput.User.WriteLine("*** Your tell buffer ***");
+
+			output += "*** End ***";
+			CurrentInput.User.WriteLine(output);
+		}
+
+		public string Name {
+			get { //TODO: how to support other languages?
+				return "revtell";
+			}
+		}
+	}
+
+	public class ClearTell : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			CurrentInput.User.TellBuffer.Clear();
+			CurrentInput.User.WriteLine("Your tells have now been cleared.");
+		}
+
+		public string Name {
+			get { 
+				return "ctell";
 			}
 		}
 	}

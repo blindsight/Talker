@@ -17,6 +17,7 @@ namespace Talker
 			client = clientConnection;
 			name = "User " + clientIndex;
 			this.Desc = " is a newbie needing a description. ";
+			this.TellBuffer = new List<UserCommuncationBuffer>();
 		}
 
 		public void Write(string clientText)
@@ -42,6 +43,7 @@ namespace Talker
 
 		public void Quit()
 		{
+			//close but don't destory the object since there could still be references to the user still.
 			client.Close();
 		}
 
@@ -58,6 +60,11 @@ namespace Talker
 		public DateTime Logon {
 			get;
 			set;
+		}
+
+		public List<UserCommuncationBuffer> TellBuffer {
+			get;
+			protected set;
 		}
 	}
 }

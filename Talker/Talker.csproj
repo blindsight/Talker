@@ -45,6 +45,7 @@
     <Compile Include="Commands\Speech.cs" />
     <Compile Include="Commands\System.cs" />
     <Compile Include="Commands\User.cs" />
+    <Compile Include="UserCommuncationBuffer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
