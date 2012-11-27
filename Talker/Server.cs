@@ -12,6 +12,7 @@ namespace Talker
 
 		static Server()
 		{
+			TalkerBooted = DateTime.UtcNow;
 			//TODO: needs to be thread safe
 			ClientList = new List<User>();
 			CommandList = new List<ICommand>();
@@ -67,6 +68,11 @@ namespace Talker
 					currentClient.Write(clientText);
 				}
 			}
+		}
+
+		public static DateTime TalkerBooted {
+			get;
+			protected set;
 		}
 	}
 }

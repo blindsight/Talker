@@ -20,6 +20,36 @@ namespace Talker.Commands
 		}
 	}
 
+	public class Think : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			string output = String.Format("{0} thinks . o O ( {1} )\n", CurrentInput.User.Name, CurrentInput.Message);
+			Server.WriteAll(output);
+		}
+
+		public string Name {
+			get {
+				return "think";
+			}
+		}
+	}
+
+	public class Sing : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			string output = String.Format("{0} sings o/~ {1} o/~\n", CurrentInput.User.Name, CurrentInput.Message);
+			Server.WriteAll(output);
+		}
+		
+		public string Name {
+			get {
+				return "sing";
+			}
+		}
+	}
+
 	public class Emote : ICommand
 	{
 		public void Run(UserInput CurrentInput)

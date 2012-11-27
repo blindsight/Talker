@@ -28,5 +28,31 @@ namespace Talker.Commands
 			}
 		}
 	}
+
+	public class Time : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+
+			DateTime currentTime = DateTime.UtcNow;
+			TimeSpan upTime = currentTime - Server.TalkerBooted;
+
+			string output="+----------------------------------------------------------------------------+\n";
+			output +="| Talker times                                                               |\n";
+			output +="+----------------------------------------------------------------------------+\n";
+			output += String.Format("| The current system time is : {0,-45} |\n",currentTime);
+			output += String.Format("| System booted              : {0,-45} |\n", Server.TalkerBooted);
+			output += String.Format("| Uptime                     : {0,6} days, {1,2} hours, {2,2} minutes, {3,2} seconds |\n", upTime.Days, upTime.Hours, upTime.Minutes, upTime.Seconds);
+			output +="+----------------------------------------------------------------------------+\n";
+
+			CurrentInput.User.WriteLine(output);
+		}
+
+		public string Name {
+			get {
+				return "time";
+			}
+		}
+	}
 }
 
