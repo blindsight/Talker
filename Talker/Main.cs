@@ -66,104 +66,15 @@ namespace Talker
 				string userInput = encoder.GetString(message, 0, bytesRead).Trim();
 
 				if(userInput.StartsWith(".")) {
-					string userCommandText = userInput.Remove(0,1);
-					string[] userCommands = userCommandText.Split(' ');
-					int userInputStart = userInput.IndexOf(' ');
-					userInputStart = ( userInputStart>= 0) ? userInputStart : 0; //make sure the index is above 0
-					string userMessage = userInput.Remove(0, userInputStart);
+					UserInput CurrentInput = new UserInput(userObj, userInput);
 
-					switch(userCommands[0].ToLower()) {
-						case "quit":
-							userObj.WriteLine("Thank you for coming and Goodbye!");
-							Server.ClientList.Remove(userObj);
-							userObj.Quit();
-						break;
-						case "shout":
-							Server.WriteAll("Broadcast: " + userMessage + "\n");
-						break;
-						case "name":
-							if(userCommands.Length < 2) {
-								userObj.WriteLine(".name <new name>");
-								break;
-							}
+					//TODO: need to check partial input as well
+					ICommand CurrentCommand = Server.CommandList.Find(x => x.Name.Equals(CurrentInput.Args[0].ToLower()));
 
-							userObj.Name = userCommands[1];
-							userObj.WriteLine("Your name has been changed to \"" + userObj.Name + "\"");
-						break;
-						case "desc":
-							if(userCommands.Length < 2) {
-								userObj.WriteLine("Your current description is: " + userObj.Desc);
-								break;
-							}
-						
-							userObj.Desc = userMessage;
-							userObj.WriteLine("Your description has been changed to \"" + userObj.Desc + "\"");
-						break;
-						case "tell":
-							if(userCommands.Length < 2) {
-								userObj.WriteLine(".tell <user> <message>");
-								break;
-							}
-
-							
-							string userTo = userMessage.Substring(0, userMessage.IndexOf(' '));
-							string messageTo = userMessage.Substring(userMessage.IndexOf(' '));
-
-							User userObjTo = Server.FindClientByName(userTo);	
-
-							if(userObjTo == null) {
-								userObj.WriteLine("No such named \"" + userTo + "\"user.");
-							} else {
-								userObj.WriteLine("you tell " + userTo + ": " + messageTo);
-								userObjTo.WriteLine(userObj.Name + " tells you:" + messageTo);
-							}
-						break;
-						case "emote":
-							if(userCommands.Length < 2) {
-								userObj.WriteLine("Usage: emote <text>\n");
-								break;
-							}
-						
-							Server.WriteAll( userObj.Name + "" + userMessage);
-						break;
-						case "who":
-							
-							userObj.WriteLine("+----------------------------------------------------------------------+");
-							userObj.WriteLine("|  Name      Description                                      |  Mins  |");
-							userObj.WriteLine("+----------------------------------------------------------------------+");
-						
-							string whoLines = "";
-						
-							DateTime commonTime = DateTime.UtcNow;
-						
-							foreach(User CurrentUser in Server.ClientList) {
-								TimeSpan minsOnline = commonTime - CurrentUser.Logon;
-							
-								whoLines += String.Format("| {0,-59} | {1,-6} |\n", CurrentUser.Name + CurrentUser.Desc, minsOnline.Minutes);
-							}
-
-							userObj.Write(whoLines);
-							userObj.WriteLine("+----------------------------------------------------------------------+");
-
-						break;
-						case "version":
-							userObj.WriteLine("+----------------------------------------------------------------------------+");
-							userObj.WriteLine("|                           Your Talker's Name Here                          |");
-							userObj.WriteLine("+----------------------------------------------------------------------------+");
-							userObj.WriteLine(String.Format("| Total number of users    : {0}                             |", Server.ClientList.Count));
-	/*| Logons this current boot :    1 new users,    1 old users                  |
-	| Total number of users    : 3     Maximum online users     : 50             |
-	| Total number of rooms    : 15    Swear ban currently on   : OFF            |
-	| Smail auto-forwarding on : YES   Auto purge on            : NO             |
-	| Maximum smail copies     : 6     Names can be recapped    : YES            |
-	| Personal rooms active    : YES   Maximum user idle time   : 60  mins       |*/
-							userObj.WriteLine("+----------------------------------------------------------------------------+");
-							userObj.WriteLine("| 0.0.1                                        (C) Timothy Rhodes 2012       |");
-							userObj.WriteLine("+----------------------------------------------------------------------------+");
-						break;
-						default:
-							userObj.WriteLine("Unknown command.");
-						break;
+					if(CurrentCommand != null) {
+						CurrentCommand.Run(CurrentInput);
+					} else {
+						userObj.WriteLine("Unknown command.");
 					}
 				} else {
 					userObj.WriteLine("You say: " + userInput);

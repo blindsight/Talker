@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 
 namespace Talker
@@ -11,10 +12,33 @@ namespace Talker
 
 		static Server()
 		{
+			//TODO: needs to be type safe
 			ClientList = new List<User>();
+			CommandList = new List<ICommand>();
+
+			Assembly asm = Assembly.GetExecutingAssembly();
+
+			foreach (Type type in asm.GetTypes()) {
+				if(type.Namespace.Equals("Talker.Commands") 
+				   && type.IsClass
+				   && type.GetInterface("ICommand") != null) {
+
+				   //type.GetInterfaces() ("ICommand")) {
+					ICommand newCommand = (ICommand)Activator.CreateInstance(type);
+
+					CommandList.Add(newCommand);
+					//CommandList.Add(ne
+				}
+			}
 		}
 
 		public static List<User> ClientList
+		{
+			get;
+			protected set;
+		}
+
+		public static List<ICommand> CommandList
 		{
 			get;
 			protected set;

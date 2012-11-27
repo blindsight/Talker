@@ -9,6 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Talker</RootNamespace>
     <AssemblyName>Talker</AssemblyName>
+    <ReleaseVersion>0.0.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
@@ -39,6 +40,11 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="UserInput.cs" />
+    <Compile Include="Commands\Speech.cs" />
+    <Compile Include="Commands\System.cs" />
+    <Compile Include="Commands\User.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,4 +60,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Commands\" />
+  </ItemGroup>
 </Project>
