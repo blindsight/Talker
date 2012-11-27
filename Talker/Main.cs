@@ -37,6 +37,7 @@ namespace Talker
 
 				User UserObj = new User(client, userNumber);
 				UserObj.Logon = DateTime.UtcNow;
+				UserObj.TotalLogins++;
 
 				Server.ClientList.Add(UserObj);
 				clientThread.Start(UserObj);

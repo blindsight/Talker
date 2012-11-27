@@ -73,7 +73,7 @@ namespace Talker.Commands
 			foreach(User CurrentUser in Server.ClientList) {
 				TimeSpan minsOnline = commonTime - CurrentUser.Logon;
 				
-				whoLines += String.Format("| {0,-59} | {1,-6} |\n", CurrentUser.Name + CurrentUser.Desc, minsOnline.Minutes);
+				whoLines += String.Format("| {0,-59} | {1,-6} |\n", CurrentUser.Name + CurrentUser.Desc, Math.Round(minsOnline.TotalMinutes));
 			}
 			
 			CurrentInput.User.Write(whoLines);
@@ -109,6 +109,63 @@ namespace Talker.Commands
 		public string Name {
 			get {
 				return "help";
+			}
+		}
+	}
+
+	public class UserStatus : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			User CurrentUser = CurrentInput.User;
+
+			if (CurrentInput.Args.Length > 1) {
+				User NewUser = Server.FindClientByName(CurrentInput.Args[1]);
+
+				if(NewUser != null) {
+					CurrentUser = NewUser;
+				}
+			}
+			TimeSpan OnlineFor = DateTime.UtcNow - CurrentUser.Logon;
+
+			string output = "+----- User Info ---------------------------------------------+\n";
+			string NameDesc = String.Format("{0} - {1} ",CurrentUser.Name, CurrentUser.Desc);
+			output += String.Format("Name   : {0,-30}                Level : \n", NameDesc);
+			output += String.Format("Gender : {0,-15} Age : {1, -15}  Online for : {2,-15} mins\n",CurrentUser.Gender, CurrentUser.Age, Math.Round(OnlineFor.TotalMinutes));
+			output += String.Format("Email Address : {0}\n", CurrentUser.Email);
+			output += String.Format("Total Logins  : {0} \n", CurrentUser.TotalLogins);
+			output += "+----------------------------------------------------------------------------+\n";
+			CurrentInput.User.WriteLine(output);
+			/*
++----- User Info -- (currently logged on) -----------------------------------+
+Name   : Test - remove this character                  Level : GOD
+Gender : Male          Age : Unknown              Online for : 900 mins
+Email Address : Currently unset
+Homepage URL  : Currently unset
+ICQ Number    : Currently unset
+Total Logins  : 8          Total login : 0 days, 16 hours, 8 minutes
++----- General Info ---------------------------------------------------------+
+Enter Msg     : Test enters
+Exit Msg      : Test goes to the...
+Invited to    : <nowhere>      Muzzled : NO             Ignoring : NO           
+In Area       : reception      At home : YES            New Mail : NO           
+Killed 0 people, and died 0 times.  Energy : 10, Bullets : 6
++----- User Only Info -------------------------------------------------------+
+Char echo     : NO             Wrap    : NO             Monitor  : NO           
+Colours       : YES            Pager   : 23             Logon rm : NO           
+Quick call to : <no one>       Autofwd : NO             Verified : NO           
+On from site  : localhost                                   Port : 64638
++----- Wiz Only Info --------------------------------------------------------+
+Unarrest Lev  : GOD            Arr lev : Unarrested     Muz Lev  : Unmuzzled    
+Logon room    : reception                               Shackled : NO
+Last site     : localhost
+User Expires  : YES            On date : Sat 2013-01-05 18:49:59
++----------------------------------------------------------------------------+*/
+		}
+
+		public string Name {
+			get {
+				return "ustat";
 			}
 		}
 	}

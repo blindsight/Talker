@@ -57,6 +57,26 @@ namespace Talker
 			set;
 		}
 
+		public string Email {
+			get;
+			set;
+		}
+
+		public string Gender {
+			get;
+			set;
+		}
+
+		public int TotalLogins {
+			get;
+			set;
+		}
+
+		public short Age {
+			get;
+			set;
+		}
+
 		public DateTime Logon {
 			get;
 			set;
