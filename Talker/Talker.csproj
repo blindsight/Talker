@@ -50,6 +50,8 @@
     <Compile Include="Commands\System.cs" />
     <Compile Include="Commands\User.cs" />
     <Compile Include="UserCommuncationBuffer.cs" />
+    <Compile Include="Room.cs" />
+    <Compile Include="Commands\Room.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -37,9 +37,12 @@ namespace Talker
 
 				User UserObj = new User(client, userNumber);
 				UserObj.Logon = DateTime.UtcNow;
+				UserObj.Room = Server.LoginRoom;
+				UserObj.Room.Users.Add(UserObj);
 
 				Server.ClientList.Add(UserObj);
 				clientThread.Start(UserObj);
+
 				UserObj.WriteLine("[Entering is: " + UserObj.Name + " " + UserObj.Desc + " ] ");
 			}
 		}
@@ -80,7 +83,7 @@ namespace Talker
 					}
 				} else {
 					userObj.WriteLine("You say: " + userInput);
-					Server.WriteAllBut( userObj.Name + " Says: " + userInput + "\n", new List<User>{ userObj});
+					userObj.Room.WriteAllBut( userObj.Name + " Says: " + userInput + "\n", new List<User>{ userObj});
 				}
 			}
 		}

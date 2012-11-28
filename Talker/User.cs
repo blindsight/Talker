@@ -50,6 +50,18 @@ namespace Talker
 			get { return client.GetStream(); }
 		}
 
+		public void ChangeRoom(Room newRoom)
+		{
+			this.Room.WriteAllBut(String.Format("{0} leaves.\n", this.Name), new List<User> { this });
+			//take the user out of the room so that write to room is faster. 
+			this.Room.Users.Remove(this);
+			this.Room = newRoom;
+			this.Room.Users.Add(this);
+
+			this.WriteLine(String.Format("you have changed to the {0} room", this.Room.Name));
+			this.Room.WriteAllBut(String.Format("{0} arrives.\n", this.Name), new List<User> { this });
+		}
+
 		public LoginResult Login(string userName)
 		{
 			using (MySqlConnection conn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString)) {

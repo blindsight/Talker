@@ -25,7 +25,7 @@ namespace Talker.Commands
 		public void Run(UserInput CurrentInput)
 		{
 			string output = String.Format("{0} thinks . o O ( {1} )\n", CurrentInput.User.Name, CurrentInput.Message);
-			Server.WriteAll(output);
+			CurrentInput.User.Room.Write(output);
 		}
 
 		public string Name {
@@ -40,7 +40,7 @@ namespace Talker.Commands
 		public void Run(UserInput CurrentInput)
 		{
 			string output = String.Format("{0} sings o/~ {1} o/~\n", CurrentInput.User.Name, CurrentInput.Message);
-			Server.WriteAll(output);
+			CurrentInput.User.Room.Write(output);
 		}
 		
 		public string Name {
@@ -58,8 +58,8 @@ namespace Talker.Commands
 				CurrentInput.User.WriteLine("Usage: emote <text>\n");
 				return;
 			}
-			
-			Server.WriteAll(CurrentInput.User.Name + "" + CurrentInput.Message);
+
+			CurrentInput.User.Room.Write(CurrentInput.User.Name + "" + CurrentInput.Message);
 		}
 
 		public string Name {
