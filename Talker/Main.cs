@@ -37,7 +37,6 @@ namespace Talker
 
 				User UserObj = new User(client, userNumber);
 				UserObj.Logon = DateTime.UtcNow;
-				UserObj.TotalLogins++;
 
 				Server.ClientList.Add(UserObj);
 				clientThread.Start(UserObj);
@@ -47,6 +46,9 @@ namespace Talker
 
 		private static void HandleClientCommunication(object client)
 		{
+			//NOTE since each communication is its own thread it is ok to block for a single user
+			//althrough async would be the future plans even for a single user. 
+			//this server wouldn't need to be multi threaded if we used async stuff. MONO 3.0!
 			User userObj = (User)client;
 			NetworkStream clientStream = userObj.Stream;
 

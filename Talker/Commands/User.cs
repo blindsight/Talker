@@ -8,6 +8,7 @@ namespace Talker.Commands
 		{
 			CurrentInput.User.WriteLine("Thank you for coming and Goodbye!");
 			Server.ClientList.Remove(CurrentInput.User);
+			CurrentInput.User.Save();
 			CurrentInput.User.Quit();
 		}
 
@@ -26,9 +27,14 @@ namespace Talker.Commands
 				CurrentInput.User.WriteLine(".name <new name>");
 				return;
 			}
-			
-			CurrentInput.User.Name = CurrentInput.Args[1];
-			CurrentInput.User.WriteLine("Your name has been changed to \"" + CurrentInput.User.Name + "\"");
+
+			if(CurrentInput.User.Login(CurrentInput.Args[1]) == User.LoginResult.ValidLogin) {
+				CurrentInput.User.WriteLine("You are now logged in as \"" + CurrentInput.User.Name + "\"");
+			} else if(CurrentInput.User.Login(CurrentInput.Args[1]) == User.LoginResult.OpenUserName) {
+				//TODO: save user after name change
+				CurrentInput.User.Name = CurrentInput.Args[1];
+				CurrentInput.User.WriteLine("Your name has been changed to \"" + CurrentInput.User.Name + "\"");
+			}
 		}
 		
 		public string Name {
