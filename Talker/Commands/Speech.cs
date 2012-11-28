@@ -9,6 +9,7 @@ namespace Talker.Commands
 		{
 			string output = String.Format("! {0} shouts: " + CurrentInput.Message + "\n", CurrentInput.User.Name);
 			string userOutput = String.Format("! You shout: " + CurrentInput.Message + "\n");
+
 			Server.WriteAllBut(output, new List<User>{ CurrentInput.User } );
 			CurrentInput.User.WriteLine(userOutput);
 		}
@@ -25,6 +26,7 @@ namespace Talker.Commands
 		public void Run(UserInput CurrentInput)
 		{
 			string output = String.Format("{0} thinks . o O ( {1} )\n", CurrentInput.User.Name, CurrentInput.Message);
+			CurrentInput.User.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, CurrentInput.User));
 			CurrentInput.User.Room.Write(output);
 		}
 
@@ -40,6 +42,7 @@ namespace Talker.Commands
 		public void Run(UserInput CurrentInput)
 		{
 			string output = String.Format("{0} sings o/~ {1} o/~\n", CurrentInput.User.Name, CurrentInput.Message);
+			CurrentInput.User.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, CurrentInput.User));
 			CurrentInput.User.Room.Write(output);
 		}
 		
@@ -58,8 +61,10 @@ namespace Talker.Commands
 				CurrentInput.User.WriteLine("Usage: emote <text>\n");
 				return;
 			}
+			string output = CurrentInput.User.Name + "" + CurrentInput.Message;
 
-			CurrentInput.User.Room.Write(CurrentInput.User.Name + "" + CurrentInput.Message);
+			CurrentInput.User.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, CurrentInput.User));
+			CurrentInput.User.Room.Write(output);
 		}
 
 		public string Name {

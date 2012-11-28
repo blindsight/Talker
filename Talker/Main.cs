@@ -89,8 +89,12 @@ namespace Talker
 						userObj.WriteLine("Unknown command.");
 					}
 				} else {
+					//TODO: setup default command thing.. 
 					userObj.WriteLine("You say: " + userInput);
-					userObj.Room.WriteAllBut( userObj.Name + " Says: " + userInput + "\n", new List<User>{ userObj});
+					string output = String.Format("{0} says: {1}\n", userObj.Name, userInput);
+
+					userObj.Room.WriteAllBut(output, new List<User>{ userObj});
+					userObj.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, userObj));
 				}
 			}
 		}

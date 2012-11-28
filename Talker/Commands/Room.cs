@@ -73,5 +73,49 @@ namespace Talker.Commands
 			}
 		}
 	}
+
+	public class Review : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			if(currentInput.User.Room.Review.Count > 0 ) {
+				currentInput.User.WriteLine("*** Room conversation buffer ***\n");
+
+				string output = "";
+
+				currentInput.User.Room.Review.ForEach(delegate(UserCommuncationBuffer currentMessage) {
+					//TODO: what if the line doesn't have a new line at the end?
+					output += String.Format("{0} {1}", currentMessage.Send.ToShortTimeString(), currentMessage.Message);
+				});
+
+				currentInput.User.WriteLine(output);
+				currentInput.User.WriteLine("*** End ***");
+			} else {
+				currentInput.User.WriteLine("Review buffer is empty.");
+			}
+		}
+
+		public string Name {
+			get {
+				return "review";
+			}
+		}
+	}
+
+	public class ClearBuffer : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Room.Review.Clear();
+			currentInput.User.WriteLine("You clear the review buffer.");
+			currentInput.User.Room.WriteAllBut(String.Format("{0} clears the review buffer.\n", currentInput.User.Name), new System.Collections.Generic.List<User> { currentInput.User });
+		}
+
+		public string Name {
+			get {
+				return "cbuff";
+			}
+		}
+	}
 }
 

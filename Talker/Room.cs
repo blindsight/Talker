@@ -11,6 +11,7 @@ namespace Talker
 		public Room()
 		{
 			Users = new List<User>();
+			Review = new List<UserCommuncationBuffer>();
 		}
 
 		public Room(long roomIdToLoad) : this()
@@ -131,6 +132,11 @@ namespace Talker
 		public string Topic {
 			get;
 			set;
+		}
+
+		public List<UserCommuncationBuffer> Review {
+			get;
+			protected set;
 		}
 	}
 }
