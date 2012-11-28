@@ -100,18 +100,31 @@ namespace Talker.Commands
 		public void Run(UserInput CurrentInput)
 		{
 			string output = "";
+			string line = "";
+			short lineLength = 0;
 
-			for(int i = 0; i < Server.CommandList.Count; i++) {
-				output += String.Format(" {0} ", Server.CommandList[i].Name.PadRight(10));
+			Server.CommandList.ForEach(delegate(ICommand currentCommand) {
+				line += String.Format("{0, -12}", currentCommand.Name.PadRight(10));
 
-				if (i % 4 == 0 && i != 0) {
-					//TODO: might want to use string builder here
-					output += "\n";
+				if(lineLength == 5) {
+					output += String.Format("| {0, -74} |\n", line);
+					line = "";
+					lineLength = 0;
+				} else {
+					lineLength++;
 				}
-			}
+			});
 
-			CurrentInput.User.WriteLine(output);
-			CurrentInput.User.WriteLine(String.Format("         {0} Total Commands        ", Server.CommandList.Count));
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine("| All commands start with a \".\" (when in speech mode) and can be abbreviated |");
+			CurrentInput.User.WriteLine("| Remember, a \".\" by itself will repeat your last command or speech          |");
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine("|                    Commands available to you                               |");
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
+			CurrentInput.User.Write(output);
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine(String.Format("|  There is a total of {0} commands that you can use                          |", Server.CommandList.Count));
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
 		}
 
 		public string Name {

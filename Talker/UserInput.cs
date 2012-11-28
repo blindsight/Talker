@@ -7,6 +7,7 @@ namespace Talker
 		public UserInput(User CurrentUser, string CommandInput)
 		{
 			//remove the "." before running command
+			this.CommandInput = CommandInput;
 			this.Input = CommandInput.Remove(0,1);
 			//string userCommandText = CommandInput.Remove(0,1);
 			this.Args = this.Input.Split(' ');
@@ -17,6 +18,12 @@ namespace Talker
 		}
 
 		public User User
+		{
+			get;
+			protected set;
+		}
+
+		public string CommandInput
 		{
 			get;
 			protected set;

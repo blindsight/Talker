@@ -134,7 +134,7 @@ namespace Talker
 			set;
 		}
 
-		public List<UserCommuncationBuffer> Review {
+		public List<UserCommuncationBuffer> Review { //TODO: change to conversation instead of review?
 			get;
 			protected set;
 		}

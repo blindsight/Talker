@@ -3,6 +3,32 @@ using System.Collections.Generic;
 
 namespace Talker.Commands
 {
+	public class Say : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			string sayText = currentInput.Message;
+
+			if(!currentInput.CommandInput.StartsWith(".")) {
+				sayText = currentInput.CommandInput;
+			}
+
+			User userObj = currentInput.User;
+
+			userObj.WriteLine("You say: " + sayText);
+			string output = String.Format("{0} says: {1}\n", userObj.Name, sayText);
+			
+			userObj.Room.WriteAllBut(output, new List<User>{ userObj});
+			userObj.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, userObj));
+		}
+
+		public String Name {
+			get {
+				return "say";
+			}
+		}
+	}
+
 	public class Shout : ICommand
 	{
 		public void Run(UserInput CurrentInput)

@@ -77,24 +77,28 @@ namespace Talker
 				UTF8Encoding encoder = new UTF8Encoding();
 				string userInput = encoder.GetString(message, 0, bytesRead).Trim();
 
+				UserInput CurrentInput = new UserInput(userObj, userInput);
+
 				if(userInput.StartsWith(".")) {
-					UserInput CurrentInput = new UserInput(userObj, userInput);
+					if(userInput.Trim().Length == 1) {
+						userObj.LastCommand.Run(userObj.LastInput);
+						continue;
+					}
 
 					//TODO: need to check partial input as well
 					ICommand CurrentCommand = Server.CommandList.Find(x => x.Name.Equals(CurrentInput.Args[0].ToLower()));
 
 					if(CurrentCommand != null) {
+						userObj.LastCommand = CurrentCommand;
+						userObj.LastInput = CurrentInput;
+
 						CurrentCommand.Run(CurrentInput);
 					} else {
 						userObj.WriteLine("Unknown command.");
 					}
 				} else {
 					//TODO: setup default command thing.. 
-					userObj.WriteLine("You say: " + userInput);
-					string output = String.Format("{0} says: {1}\n", userObj.Name, userInput);
-
-					userObj.Room.WriteAllBut(output, new List<User>{ userObj});
-					userObj.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, userObj));
+					Server.DefaultCommand.Run(CurrentInput);
 				}
 			}
 		}

@@ -171,6 +171,16 @@ namespace Talker
 			get;
 			protected set;
 		}
+
+		public ICommand LastCommand {
+			get;
+			set;
+		}
+
+		public UserInput LastInput {
+			get;
+			set;
+		}
 	}
 }
 

@@ -117,5 +117,26 @@ namespace Talker.Commands
 			}
 		}
 	}
+
+	public class Topic : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			if(currentInput.Args.Length < 2) {
+				currentInput.User.WriteLine(String.Format("The current topic is: {0}", currentInput.User.Room.Topic));
+			} else {
+				currentInput.User.Room.Topic = currentInput.Message;
+
+				currentInput.User.WriteLine(String.Format("Topic set to: {0}", currentInput.Message));
+				currentInput.User.Room.WriteAllBut(String.Format("{0} has set the topic to: {1}\n", currentInput.User.Name, currentInput.Message), new System.Collections.Generic.List<User> { currentInput.User });
+			}
+		}
+
+		public string Name {
+			get {
+				return "topic";
+			}
+		}
+	}
 }
 

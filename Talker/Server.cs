@@ -26,6 +26,10 @@ namespace Talker
 					ICommand newCommand = (ICommand)Activator.CreateInstance(type);
 
 					CommandList.Add(newCommand);
+
+					if(newCommand.Name.Equals("say")) {
+						Server.DefaultCommand = newCommand;
+					}
 				}
 			}
 
@@ -123,6 +127,12 @@ namespace Talker
 		}
 
 		public static Room LoginRoom {
+			get;
+			set;
+		}
+
+		public static ICommand DefaultCommand
+		{
 			get;
 			set;
 		}
