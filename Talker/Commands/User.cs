@@ -68,9 +68,9 @@ namespace Talker.Commands
 	{
 		public void Run(UserInput CurrentInput)
 		{
-			CurrentInput.User.WriteLine("+----------------------------------------------------------------------+");
-			CurrentInput.User.WriteLine("|  Name      Description                                      |  Mins  |");
-			CurrentInput.User.WriteLine("+----------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine("| Name                                           : Room            : Mins    |"); //TODO: add idle as well
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
 			
 			string whoLines = "";
 			
@@ -79,11 +79,13 @@ namespace Talker.Commands
 			foreach(User CurrentUser in Server.ClientList) {
 				TimeSpan minsOnline = commonTime - CurrentUser.Logon;
 				
-				whoLines += String.Format("| {0,-59} | {1,-6} |\n", CurrentUser.Name + CurrentUser.Desc, Math.Round(minsOnline.TotalMinutes));
+				whoLines += String.Format("| {0,-46} : {1,-15} : {2,-6} |\n", CurrentUser.Name + CurrentUser.Desc, CurrentUser.Room.Name, Math.Round(minsOnline.TotalMinutes));
 			}
 			
 			CurrentInput.User.Write(whoLines);
-			CurrentInput.User.WriteLine("+----------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
+			CurrentInput.User.WriteLine(String.Format("|                           Total of {0} user(s)                               |", Server.ClientList.Count));
+			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
 		}
 		
 		public string Name {

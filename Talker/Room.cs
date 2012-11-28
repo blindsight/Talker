@@ -13,16 +13,40 @@ namespace Talker
 			Users = new List<User>();
 		}
 
+		public Room(long roomIdToLoad) : this()
+		{
+			using (MySqlConnection conn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString)) {
+				using(MySqlCommand cmd = new MySqlCommand("SELECT * FROM rooms WHERE roomId = ?roomId", conn)) {
+					cmd.Parameters.AddWithValue("?roomId", roomIdToLoad);
+					cmd.Connection.Open();
+					
+					MySqlDataReader roomReader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+					
+					while(roomReader.Read()) { //TODO should the while be used if only one row?
+						this.Id = long.Parse(roomReader["roomId"].ToString());
+						this.Name = roomReader["name"].ToString();
+						this.Desc = roomReader["desc"].ToString(); //todo: should try parse be used for safety?
+						this.Topic = roomReader["topic"].ToString();
+						
+						//TODO: could add total users entered and left or something for stats?
+					}
+					
+					cmd.Connection.Close();
+				}
+			}
+		}
+
 		public Room(string roomNameToLoad)
 		{
 			using (MySqlConnection conn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString)) {
 				using(MySqlCommand cmd = new MySqlCommand("SELECT * FROM rooms WHERE name = ?roomname", conn)) {
 					cmd.Parameters.AddWithValue("?roomname", roomNameToLoad);
 					cmd.Connection.Open();
-					
+
 					MySqlDataReader roomReader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleResult);
 					
 					while(roomReader.Read()) { //TODO should the while be used if only one row?
+						this.Id = long.Parse(roomReader["roomId"].ToString());
 						this.Name = roomReader["name"].ToString();
 						this.Desc = roomReader["desc"].ToString(); //todo: should try parse be used for safety?
 						this.Topic = roomReader["topic"].ToString();
@@ -33,8 +57,6 @@ namespace Talker
 					cmd.Connection.Close();
 				}
 			}
-
-			Users = new List<User>();
 		}
 
 		public void Write(string message)
@@ -70,6 +92,7 @@ namespace Talker
 					
 					while(roomReader.Read()) { //TODO should the while be used if only one row?
 						Room newRoom = new Room();
+						newRoom.Id = long.Parse(roomReader["roomId"].ToString());
 						newRoom.Name = roomReader["name"].ToString();
 						newRoom.Desc = roomReader["desc"].ToString(); //todo: should try parse be used for safety?
 						newRoom.Topic = roomReader["topic"].ToString();
@@ -83,6 +106,11 @@ namespace Talker
 			}
 
 			return rooms;
+		}
+
+		public long Id {
+			get;
+			protected set;
 		}
 
 		public List<User> Users {

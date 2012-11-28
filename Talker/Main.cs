@@ -40,10 +40,17 @@ namespace Talker
 				UserObj.Room = Server.LoginRoom;
 				UserObj.Room.Users.Add(UserObj);
 
+				Server.CommandList.ForEach(delegate(ICommand command) {
+					if(command.Name.Equals("look")) {
+						UserInput newInput = new UserInput(UserObj, "look");
+						command.Run(newInput);
+					}
+				});
+
 				Server.ClientList.Add(UserObj);
 				clientThread.Start(UserObj);
 
-				UserObj.WriteLine("[Entering is: " + UserObj.Name + " " + UserObj.Desc + " ] ");
+				Server.WriteAll("[Entering is: " + UserObj.Name + " " + UserObj.Desc + " ] \n");
 			}
 		}
 

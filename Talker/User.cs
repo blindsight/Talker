@@ -58,7 +58,14 @@ namespace Talker
 			this.Room = newRoom;
 			this.Room.Users.Add(this);
 
-			this.WriteLine(String.Format("you have changed to the {0} room", this.Room.Name));
+			//TODO: find a better way to do this
+			Server.CommandList.ForEach(delegate(ICommand command) {
+				if(command.Name.Equals("look")) {
+					UserInput newInput = new UserInput(this, "look");
+					command.Run(newInput);
+				}
+			});
+
 			this.Room.WriteAllBut(String.Format("{0} arrives.\n", this.Name), new List<User> { this });
 		}
 
