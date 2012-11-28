@@ -62,6 +62,8 @@ namespace Talker
 					while(userReader.Read()) { //TODO should the while be used if only one row?
 						this.name = userReader["name"].ToString();
 						this.TotalLogins = int.Parse(userReader["totalLogins"].ToString()); //todo: should try parse be used for safety?
+						this.Age = short.Parse(userReader["age"].ToString());
+						this.Email = userReader["email"].ToString();
 					}
 
 					cmd.Connection.Close();
@@ -80,8 +82,10 @@ namespace Talker
 		{
 			//TODO: save new record..
 			using (MySqlConnection conn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString)) {
-				using(MySqlCommand cmd = new MySqlCommand("UPDATE users SET totalLogins = ?totalLogins WHERE name = ?username", conn)) {
+				using(MySqlCommand cmd = new MySqlCommand("UPDATE users SET totalLogins = ?totalLogins, age = ?age, email = ?email WHERE name = ?username", conn)) {
 					cmd.Parameters.AddWithValue("?totalLogins", this.TotalLogins);
+					cmd.Parameters.AddWithValue("?age", this.Age);
+					cmd.Parameters.AddWithValue("?email", this.Email);
 					cmd.Parameters.AddWithValue("?username", this.Name);
 					cmd.Connection.Open();
 
@@ -135,6 +139,11 @@ namespace Talker
 		}
 
 		public DateTime Logon {
+			get;
+			set;
+		}
+
+		public Room Room {
 			get;
 			set;
 		}
