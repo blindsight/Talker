@@ -29,6 +29,41 @@ namespace Talker.Commands
 		}
 	}
 
+	public class SayTo : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			if(currentInput.Args.Length < 2) {
+				currentInput.User.WriteLine(".sayto <user> <message>");
+				return;
+			}
+		
+			string userTo = currentInput.Message.Substring(0, currentInput.Message.IndexOf(' '));
+			string messageTo = currentInput.Message.Substring(currentInput.Message.IndexOf(' '));
+			
+			User userObjTo = Server.FindClientByName(userTo);	
+			
+			if(userObjTo == null) {
+				currentInput.User.WriteLine("No such named \"" + userTo + "\"user.");
+			} else {
+				User userObj = currentInput.User;
+				
+				userObj.WriteLine(String.Format("You (to {0}) {1} ",userObjTo.Name, messageTo));
+				userObjTo.WriteLine(String.Format("{0} (to You) {1} ",userObj.Name, messageTo));
+				string output = String.Format("{0} (to {1}) {2}\n", userObj.Name, userObjTo.Name, messageTo);
+				
+				userObj.Room.WriteAllBut(output, new List<User>{ userObj, userObjTo });
+				userObj.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, userObj));
+			}
+		}
+		
+		public String Name {
+			get {
+				return "sayto";
+			}
+		}
+	}
+
 	public class Shout : ICommand
 	{
 		public void Run(UserInput CurrentInput)
