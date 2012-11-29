@@ -172,6 +172,27 @@ namespace Talker.Commands
 		}
 	}
 
+	public class Echo : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			if(CurrentInput.Args.Length < 2) {
+				CurrentInput.User.WriteLine("Usage: echo <text>\n");
+				return;
+			}
+			string output = CurrentInput.Message + "\n";
+			
+			CurrentInput.User.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, CurrentInput.User));
+			CurrentInput.User.Room.Write(output);
+		}
+		
+		public string Name {
+			get {
+				return "echo";
+			}
+		}
+	}
+
 	public class RevTell : ICommand
 	{
 		public void Run(UserInput CurrentInput)
