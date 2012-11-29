@@ -27,6 +27,8 @@ namespace Talker
 			this.Desc = " is a newbie needing a description. ";
 			this.TellBuffer = new List<UserCommuncationBuffer>();
 			this.TotalLogins = 0;
+			this.InMsg = "enters";
+			this.OutMsg = "goes";
 		}
 
 		public void Write(string clientText)
@@ -52,7 +54,6 @@ namespace Talker
 
 		public void ChangeRoom(Room newRoom)
 		{
-			this.Room.WriteAllBut(String.Format("{0} leaves.\n", this.Name), new List<User> { this });
 			//take the user out of the room so that write to room is faster. 
 			this.Room.Users.Remove(this);
 			this.Room = newRoom;
@@ -65,8 +66,6 @@ namespace Talker
 					command.Run(newInput);
 				}
 			});
-
-			this.Room.WriteAllBut(String.Format("{0} arrives.\n", this.Name), new List<User> { this });
 		}
 
 		public LoginResult Login(string userName)
@@ -83,6 +82,8 @@ namespace Talker
 						this.TotalLogins = int.Parse(userReader["totalLogins"].ToString()); //todo: should try parse be used for safety?
 						this.Age = short.Parse(userReader["age"].ToString());
 						this.Email = userReader["email"].ToString();
+						this.InMsg = userReader["inMsg"].ToString();
+						this.OutMsg = userReader["outMsg"].ToString();
 					}
 
 					cmd.Connection.Close();
@@ -99,25 +100,28 @@ namespace Talker
 
 		public bool Save()
 		{
+			int rowsAffected = 0;
 			//TODO: save new record..
 			using (MySqlConnection conn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString)) {
-				using(MySqlCommand cmd = new MySqlCommand("UPDATE users SET totalLogins = ?totalLogins, age = ?age, email = ?email WHERE name = ?username", conn)) {
+				using(MySqlCommand cmd = new MySqlCommand("UPDATE users SET totalLogins = ?totalLogins, age = ?age, email = ?email, inMsg = ?inMsg, outMsg = ?outMsg WHERE name = ?username", conn)) {
 					cmd.Parameters.AddWithValue("?totalLogins", this.TotalLogins);
 					cmd.Parameters.AddWithValue("?age", this.Age);
 					cmd.Parameters.AddWithValue("?email", this.Email);
 					cmd.Parameters.AddWithValue("?username", this.Name);
+					cmd.Parameters.AddWithValue("?outMsg", this.OutMsg);
+					cmd.Parameters.AddWithValue("?inMsg", this.InMsg);
 					cmd.Connection.Open();
 
-					int rowsAffected = cmd.ExecuteNonQuery();
+					rowsAffected = cmd.ExecuteNonQuery();
 
 					cmd.Connection.Close();
-
-					if(rowsAffected == 1) {
-						return true;
-					} else {
-						return false;
-					}
 				}
+			}
+
+			if(rowsAffected == 1) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 
@@ -153,6 +157,16 @@ namespace Talker
 		}
 
 		public short Age {
+			get;
+			set;
+		}
+
+		public string OutMsg {
+			get;
+			set;
+		}
+
+		public string InMsg {
 			get;
 			set;
 		}

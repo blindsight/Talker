@@ -44,6 +44,46 @@ namespace Talker.Commands
 		}
 	}
 
+	public class InMsg : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			if(CurrentInput.Args.Length < 2) {
+				CurrentInput.User.WriteLine(String.Format("Your current in phrase is: {0}", CurrentInput.User.InMsg));
+				return;
+			}
+
+			CurrentInput.User.InMsg = CurrentInput.Message;
+			CurrentInput.User.WriteLine("In phrase set.");
+		}
+		
+		public string Name {
+			get {
+				return "inmsg";
+			}
+		}
+	}
+
+	public class OutMsg : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			if(CurrentInput.Args.Length < 2) {
+				CurrentInput.User.WriteLine(String.Format("Your current out phrase is: {0}", CurrentInput.User.InMsg));
+				return;
+			}
+			
+			CurrentInput.User.OutMsg = CurrentInput.Message;
+			CurrentInput.User.WriteLine("Out phrase set.");
+		}
+		
+		public string Name {
+			get {
+				return "outmsg";
+			}
+		}
+	}
+
 	public class Desc : ICommand
 	{
 		public void Run(UserInput CurrentInput)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Talker.Commands
 {
@@ -38,7 +39,10 @@ namespace Talker.Commands
 					newRoom = Server.LoginRoom;
 				}
 			}
+
+			currentInput.User.Room.WriteAllBut(String.Format("{0} {1}\n", currentInput.User.Name, currentInput.User.OutMsg), new List<User> { currentInput.User });
 			currentInput.User.ChangeRoom(newRoom);
+			currentInput.User.Room.WriteAllBut(String.Format("{0} {1}\n", currentInput.User.Name, currentInput.User.InMsg ), new List<User> { currentInput.User });
 		}
 
 		public string Name {
