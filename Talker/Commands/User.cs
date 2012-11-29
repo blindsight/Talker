@@ -230,5 +230,37 @@ User Expires  : YES            On date : Sat 2013-01-05 18:49:59
 			}
 		}
 	}
+
+	public class Examine : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			TimeSpan onlineFor = DateTime.UtcNow - currentInput.User.Logon;
+			string output = "+----------------------------------------------------------------------------+\n";
+			output += String.Format("Name   : {0} - {1}                  Level : \n", currentInput.User.Name, currentInput.User.Desc);
+//Ignoring all: NO
+			output += String.Format("On since    : {0} {1}\n", currentInput.User.Logon.ToLongDateString(), currentInput.User.Logon.ToLongTimeString());
+			output += String.Format("On for      : {0} day, {1} hours, {2} minutes\n", onlineFor.Days, onlineFor.Hours, onlineFor.Minutes);
+
+//TODO: add profile
+/*
+ * Idle for    : 0 minutes
+Total login : 2 days, 5 hours, 38 minutes
+ *Site        : localhost                                 Port : 50717
+/*+----- Profile --------------------------------------------------------------+
+
+User has not yet written a profile.
+*/
+			output += "+----------------------------------------------------------------------------+";
+
+			currentInput.User.WriteLine(output);
+		}
+
+		public string Name {
+			get {
+				return "examine";
+			}
+		}
+	}
 }
 
