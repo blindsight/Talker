@@ -172,6 +172,41 @@ namespace Talker.Commands
 		}
 	}
 
+	public class Mutter : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			//TODO: usage for ICommand....
+			if(CurrentInput.Args.Length < 2) {
+				CurrentInput.User.WriteLine(".mutter <user> <message>");
+				return;
+			}
+			
+			string userAbout = CurrentInput.Message.Substring(0, CurrentInput.Message.IndexOf(' '));
+			string messageAbout = CurrentInput.Message.Substring(CurrentInput.Message.IndexOf(' '));
+			
+			User userObjAbout = Server.FindClientByName(userAbout);	
+			
+			if(userObjAbout == null) {
+				CurrentInput.User.WriteLine("No such named \"" + userAbout + "\"user.");
+			} else {
+				string toMessage = String.Format("(NOT {0}) {1} mutters: {2}\n",userObjAbout.Name, CurrentInput.User.Name, messageAbout);
+				string fromMessage = String.Format("(NOT {0}) you mutter: {1}\n", userAbout, messageAbout);
+
+				CurrentInput.User.WriteLine(fromMessage);
+
+				CurrentInput.User.Room.WriteAllBut(toMessage, new List<User> { userObjAbout, CurrentInput.User } );
+			}
+		}
+		
+		public string Name
+		{
+			get {
+				return "mutter";
+			}
+		}
+	}
+
 	public class Echo : ICommand
 	{
 		public void Run(UserInput CurrentInput)
