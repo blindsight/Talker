@@ -1,4 +1,6 @@
 using System;
+using System.Text;
+using System.Collections.Generic;
 
 namespace Talker.Commands
 {
@@ -51,6 +53,27 @@ namespace Talker.Commands
 		public string Name {
 			get {
 				return "time";
+			}
+		}
+	}
+
+	public class Colors : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			string output = "\n";
+
+			foreach(KeyValuePair<string, string> colorCode in Server.ColorCodes) {
+				//TODO: an escape code to show the color code
+				output += String.Format("{1} VIDEO TEST ~RS\n" ,colorCode.Key, colorCode.Value);
+			}
+
+			currentInput.User.WriteLine(output);
+		}
+
+		public string Name {
+			get {
+				return "colour";
 			}
 		}
 	}

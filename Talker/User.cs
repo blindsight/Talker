@@ -1,8 +1,10 @@
 using System;
-using System.Text;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using System.Text;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Data.SqlTypes;
@@ -36,6 +38,15 @@ namespace Talker
 			NetworkStream clientStream = client.GetStream();
 
 			if(clientStream.CanWrite) {
+				clientText += "~RS"; //ALWAYS had RS to make sure color doesn't bleed
+				//this is the first idea I've got for color parsing.
+				//forevery color there willbe another look.. this could get processing heavy
+				foreach(KeyValuePair<string, string> colorCode in Server.ColorCodes) {
+					clientText = clientText.Replace(colorCode.Key, colorCode.Value);
+				}
+
+
+
 				byte[] writeText = Encoding.UTF8.GetBytes(clientText);
 
 				clientStream.Write(writeText, 0, writeText.Length);
