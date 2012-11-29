@@ -109,6 +109,15 @@ namespace Talker
 			}
 		}
 
+		public void ClearScreen()
+		{
+			//just doing it the same way amnuts 2.3.0 does it
+
+			for(int i = 0 ; i < 5; ++i) {
+				this.Write("\n\n\n\n\n\n\n\n\n\n");
+			}
+		}
+
 		public bool Save()
 		{
 			int rowsAffected = 0;

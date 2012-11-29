@@ -262,5 +262,19 @@ User has not yet written a profile.
 			}
 		}
 	}
+
+	public class ClearScreen : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.ClearScreen();
+		}
+
+		public string Name {
+			get {
+				return "cls";
+			}
+		}
+	}
 }
 
