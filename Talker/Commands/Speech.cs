@@ -67,17 +67,45 @@ namespace Talker.Commands
 	public class Shout : ICommand
 	{
 		public void Run(UserInput CurrentInput)
-		{
+		{//TOOD: exclaims and other keywords?
 			string output = String.Format("! {0} shouts: " + CurrentInput.Message + "\n", CurrentInput.User.Name);
 			string userOutput = String.Format("! You shout: " + CurrentInput.Message + "\n");
 
 			Server.WriteAllBut(output, new List<User>{ CurrentInput.User } );
 			CurrentInput.User.WriteLine(userOutput);
+			Server.ShoutConversation.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, CurrentInput.User));
 		}
 
 		public string Name {
 			get {
 				return "shout";
+			}
+		}
+	}
+
+	public class RevShout : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			string output = "";
+			//TODO: could there be one review function that calls all the others?
+			foreach (UserCommuncationBuffer CurrentBuffer in Server.ShoutConversation) {
+				output += String.Format("[{0}] {1}\n", CurrentBuffer.Send.ToShortTimeString(), CurrentBuffer.Message);
+			}
+			
+			if (Server.ShoutConversation.Count <= 0) {
+				output += "\nRevshout buffer is empty.\n\n";
+			}
+			
+			CurrentInput.User.WriteLine("*** Shout review buffer ***\n");
+			
+			output += "*** End ***";
+			CurrentInput.User.WriteLine(output);
+		}
+		
+		public string Name {
+			get { //TODO: how to support other languages?
+				return "revshout";
 			}
 		}
 	}

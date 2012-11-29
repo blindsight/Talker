@@ -33,6 +33,7 @@ namespace Talker
 				}
 			}
 
+			ShoutConversation = new List<UserCommuncationBuffer>();
 			ColorCodes = new Dictionary<string,string>();
 			//TODO: where should this be? what if they want to change how the color codes named?
 			//TODO: move to an ansi class thats a IProtocol or something? html?
@@ -168,6 +169,11 @@ namespace Talker
 		}
 
 		public static Dictionary<string, string> ColorCodes {
+			get;
+			set;
+		}
+
+		public static List<UserCommuncationBuffer> ShoutConversation {
 			get;
 			set;
 		}
