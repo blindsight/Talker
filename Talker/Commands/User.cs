@@ -236,7 +236,7 @@ User Expires  : YES            On date : Sat 2013-01-05 18:49:59
 		public void Run(UserInput currentInput)
 		{
 			TimeSpan onlineFor = DateTime.UtcNow - currentInput.User.Logon;
-			string output = "+----------------------------------------------------------------------------+\n";
+			string output = "\n+----------------------------------------------------------------------------+\n";
 			output += String.Format("Name   : {0} - {1}                  Level : \n", currentInput.User.Name, currentInput.User.Desc);
 //Ignoring all: NO
 			output += String.Format("On since    : {0} {1}\n", currentInput.User.Logon.ToLongDateString(), currentInput.User.Logon.ToLongTimeString());
@@ -251,7 +251,7 @@ Total login : 2 days, 5 hours, 38 minutes
 
 User has not yet written a profile.
 */
-			output += "+----------------------------------------------------------------------------+";
+			output += "+----------------------------------------------------------------------------+\n";
 
 			currentInput.User.WriteLine(output);
 		}
