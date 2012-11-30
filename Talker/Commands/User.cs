@@ -276,5 +276,19 @@ User has not yet written a profile.
 			}
 		}
 	}
+
+	public class Rules : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.WriteLine(Server.getFile("rules"));
+		}
+
+		public string Name {
+			get {
+				return "rules";
+			}
+		}
+	}
 }
 

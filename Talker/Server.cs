@@ -96,6 +96,26 @@ namespace Talker
 			}
 		}
 
+		public static string getFile(string fileName, string section = "")
+		{
+			string fileContents = "";
+
+			using (MySqlConnection conn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString)) {
+				using(MySqlCommand cmd = new MySqlCommand("SELECT contents FROM talkerFiles WHERE fileName = ?fileName", conn)) {
+					cmd.Parameters.AddWithValue("fileName", fileName);
+					//TODO: add section?
+
+					cmd.Connection.Open();
+
+					fileContents = (string)cmd.ExecuteScalar();
+					
+					cmd.Connection.Close();
+				}
+			}
+
+			return fileContents;
+		}
+
 		public static List<User> ClientList
 		{
 			get;
