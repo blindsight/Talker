@@ -9,6 +9,13 @@ namespace Talker
 {
 	public static class Server
 	{
+		public enum ColorOptions
+		{
+			On,
+			Off,
+			ViewCodes
+		}
+
 		static Server()
 		{
 			TalkerBooted = DateTime.UtcNow;

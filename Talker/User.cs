@@ -31,6 +31,7 @@ namespace Talker
 			this.TotalLogins = 0;
 			this.InMsg = "enters";
 			this.OutMsg = "goes";
+			this.ColorOption = Server.ColorOptions.On;
 		}
 
 		public void Write(string clientText)
@@ -41,8 +42,18 @@ namespace Talker
 				clientText += "~RS"; //ALWAYS had RS to make sure color doesn't bleed
 				//this is the first idea I've got for color parsing.
 				//forevery color there willbe another look.. this could get processing heavy
-				foreach(KeyValuePair<string, string> colorCode in Server.ColorCodes) {
-					clientText = clientText.Replace(colorCode.Key, colorCode.Value);
+
+				if(this.ColorOption != Server.ColorOptions.ViewCodes) {
+					string replaceValue = "";
+
+					foreach(KeyValuePair<string, string> colorCode in Server.ColorCodes) {
+
+						if(this.ColorOption == Server.ColorOptions.On) {
+							replaceValue = colorCode.Value;
+						}
+
+						clientText = clientText.Replace(colorCode.Key, replaceValue);
+					}
 				}
 
 
@@ -212,6 +223,11 @@ namespace Talker
 		}
 
 		public UserInput LastInput {
+			get;
+			set;
+		}
+
+		public Server.ColorOptions ColorOption {
 			get;
 			set;
 		}
