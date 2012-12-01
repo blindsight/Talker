@@ -299,10 +299,7 @@ User has not yet written a profile.
 	{
 		public void Run(UserInput currentInput)
 		{
-			//currentInput.User.Ignores = User.Ignore.None;
-
-			if(currentInput.User.Ignores == User.Ignore.None
-			   ) {
+			if(currentInput.User.Ignores == User.Ignore.None) {
 				currentInput.User.WriteLine("You are now ignoring everyone.");
 				currentInput.User.Ignores = User.Ignore.All;
 			} else {
@@ -450,8 +447,8 @@ User has not yet written a profile.
 			string output = "\n+----------------------------------------------------------------------------+\n";
 			output += "| Your ignore states are as follows                                          |\n";
 			output += "+----------------------------------------------------------------------------+\n";
-			output += String.Format("| Ignoring shouts   : {0, -5} Ignoring tells  : {1, -5} Ignoring logons : {2, -5} |\n", ignShouts.ToYesNoString(), ignTells.ToYesNoString(), ignLogons.ToYesNoString());
-			output += String.Format("| Ignoring pictures : {0, -5} Ignoring greets : {1, -5} Ignoring beeps  : {2,-5} |\n", ignPictures.ToYesNoString(), ignGreets.ToYesNoString(), ignBeeps.ToYesNoString());
+			output += String.Format("| Ignoring shouts   : {0, -5} Ignoring tells  : {1, -5} Ignoring logons : {2,-6} |\n", ignShouts.ToYesNoString(), ignTells.ToYesNoString(), ignLogons.ToYesNoString());
+			output += String.Format("| Ignoring pictures : {0, -5} Ignoring greets : {1, -5} Ignoring beeps  : {2,-6} |\n", ignPictures.ToYesNoString(), ignGreets.ToYesNoString(), ignBeeps.ToYesNoString());
 			output += String.Format("+----------------------------------------------------------------------------+\n");
 
 			currentInput.User.WriteLine(output);
@@ -460,6 +457,25 @@ User has not yet written a profile.
 		public string Name {
 			get {
 				return "ignlist";
+			}
+		}
+	}
+
+	public class Listen : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{	
+			if(currentInput.User.Ignores == User.Ignore.None) {
+				currentInput.User.WriteLine("You are already listening to everything..");
+			} else {
+				currentInput.User.WriteLine("You listen to everything again.");
+				currentInput.User.Ignores = User.Ignore.None;
+			}
+		}
+		
+		public string Name {
+			get {
+				return "listen";
 			}
 		}
 	}

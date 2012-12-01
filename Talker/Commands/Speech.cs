@@ -17,7 +17,7 @@ namespace Talker.Commands
 
 			userObj.WriteLine("You say: " + sayText);
 			string output = String.Format("{0} says: {1}\n", userObj.Name, sayText);
-			
+			//todo: if ignotr all then nosay, sayto, etc
 			userObj.Room.WriteAllBut(output, new List<User>{ userObj});
 			userObj.Room.Review.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, userObj));
 		}
