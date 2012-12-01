@@ -155,6 +155,10 @@ namespace Talker.Commands
 				}
 			});
 
+			if(!String.IsNullOrEmpty(line))  { //check for final line
+				output += String.Format("| {0, -74} |\n", line);
+			}
+
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
 			CurrentInput.User.WriteLine("| All commands start with a \".\" (when in speech mode) and can be abbreviated |");
 			CurrentInput.User.WriteLine("| Remember, a \".\" by itself will repeat your last command or speech          |");
@@ -281,7 +285,7 @@ User has not yet written a profile.
 	{
 		public void Run(UserInput currentInput)
 		{
-			currentInput.User.WriteLine(Server.getFile("rules"));
+			currentInput.User.WriteLine(TalkerFile.GetFile("rules"));
 		}
 
 		public string Name {

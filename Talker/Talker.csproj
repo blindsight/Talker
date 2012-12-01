@@ -53,6 +53,7 @@
     <Compile Include="UserCommuncationBuffer.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="Commands\Room.cs" />
+    <Compile Include="TalkerFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

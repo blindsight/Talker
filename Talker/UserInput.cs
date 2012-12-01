@@ -8,7 +8,10 @@ namespace Talker
 		{
 			//remove the "." before running command
 			this.CommandInput = CommandInput;
-			this.Input = CommandInput.Remove(0,1);
+
+			if(CommandInput.Length > 0) {
+				this.Input = CommandInput.Remove(0,1);
+			}
 			//string userCommandText = CommandInput.Remove(0,1);
 			this.Args = this.Input.Split(' ');
 			this.InputStart = this.Input.IndexOf(' ');

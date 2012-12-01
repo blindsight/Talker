@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Reflection;
 using System.Collections.Generic;
 
 namespace Talker.Commands
@@ -8,6 +9,12 @@ namespace Talker.Commands
 	{
 		public void Run(UserInput CurrentInput)
 		{
+			string copyright = "";
+			object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+
+			if (attributes.Length > 0)
+				copyright = ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
 			CurrentInput.User.WriteLine("|                           Your Talker's Name Here                          |");
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
@@ -19,9 +26,8 @@ namespace Talker.Commands
 					| Maximum smail copies     : 6     Names can be recapped    : YES            |
 					| Personal rooms active    : YES   Maximum user idle time   : 60  mins       |*/
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
-			CurrentInput.User.WriteLine("| 0.0.1                                        (C) Timothy Rhodes 2012       |");
+			CurrentInput.User.WriteLine(String.Format("| {0, -33} {1, 40} |", Assembly.GetExecutingAssembly().GetName().Version, copyright));
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
-
 		}
 
 		public string Name {
@@ -74,6 +80,30 @@ namespace Talker.Commands
 		public string Name {
 			get {
 				return "colour";
+			}
+		}
+	}
+
+	public class DisplayFiles : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+
+			string output = "+----- Files ----------------------------------------------------------------+\n\n";
+			output += "Use these files to find out more about the talker.\n\n";
+
+			TalkerFile.GetFiles("files").ForEach(delegate(TalkerFile currentFile) {
+				output += string.Format("* {0, -10} - {1}", currentFile.FileName, currentFile.Description);
+			});
+
+			output += "\n\n+----------------------------------------------------------------------------+";
+
+			currentInput.User.WriteLine(output);
+		}
+
+		public string Name {
+			get {
+				return "files";
 			}
 		}
 	}
