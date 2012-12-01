@@ -22,6 +22,19 @@ namespace Talker
 			OpenUserName
 		}
 
+		[Flags]
+		public enum Ignore : uint {
+			None = 0, 
+			Beeps = 1, //TODO: add beeps
+			Greets = 2, //TODO: add greets
+			Logons = 4,
+			Pics = 8,
+			Shout = 16,
+			Tell = 32,
+			User = 64,//TODO: add ignore user
+			All = 4294967295 //max value for 32 bit int. The previous values need to be powers of two up to this value. which is 2^32
+		}
+
 		public User(TcpClient clientConnection, int clientIndex)
 		{
 			client = clientConnection;
@@ -32,6 +45,7 @@ namespace Talker
 			this.InMsg = "enters";
 			this.OutMsg = "goes";
 			this.ColorOption = Server.ColorOptions.On;
+			this.Ignores = User.Ignore.None;
 		}
 
 		public void Write(string clientText)
@@ -228,6 +242,11 @@ namespace Talker
 		}
 
 		public Server.ColorOptions ColorOption {
+			get;
+			set;
+		}
+
+		public Ignore Ignores {
 			get;
 			set;
 		}

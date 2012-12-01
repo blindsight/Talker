@@ -294,5 +294,174 @@ User has not yet written a profile.
 			}
 		}
 	}
+
+	public class IgnoreAll : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			//currentInput.User.Ignores = User.Ignore.None;
+
+			if(currentInput.User.Ignores == User.Ignore.None
+			   ) {
+				currentInput.User.WriteLine("You are now ignoring everyone.");
+				currentInput.User.Ignores = User.Ignore.All;
+			} else {
+				currentInput.User.WriteLine("You will now hear everyone again.");
+				currentInput.User.Ignores = User.Ignore.None;
+			}
+		}
+
+		public string Name {
+			get {
+				return "ignall";
+			}
+		}
+	}
+
+	public class IgnoreBeeps : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Ignores ^= User.Ignore.Beeps;
+			
+			if(currentInput.User.Ignores.HasFlag(User.Ignore.Beeps)) {
+				currentInput.User.WriteLine("You are now ignoring beeps.");
+			} else {
+				currentInput.User.WriteLine("You will now hear beeps again.");
+			}
+		}
+		
+		public string Name {
+			get {
+				return "ignbeeps";
+			}
+		}
+	}
+	public class IgnoreGreets : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Ignores ^= User.Ignore.Greets;
+			
+			if(currentInput.User.Ignores.HasFlag(User.Ignore.Greets)) {
+				currentInput.User.WriteLine("You are now ignoring greets.");
+			} else {
+				currentInput.User.WriteLine("You will now hear greets again.");
+			}
+		}
+		
+		public string Name {
+			get {
+				return "igngreets";
+			}
+		}
+	}
+	public class IgnoreLogons : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Ignores ^= User.Ignore.Logons;
+			
+			if(currentInput.User.Ignores.HasFlag(User.Ignore.Logons)) {
+				currentInput.User.WriteLine("You are now ignoring logons.");
+			} else {
+				currentInput.User.WriteLine("You will now see logons again.");
+			}
+		}
+		
+		public string Name {
+			get {
+				return "ignlogons";
+			}
+		}
+	}
+
+	public class IgnorePictures : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Ignores ^= User.Ignore.Pics;
+			
+			if(currentInput.User.Ignores.HasFlag(User.Ignore.Pics)) {
+				currentInput.User.WriteLine("You are now ignoring pictures.");
+			} else {
+				currentInput.User.WriteLine("You will see pictures.");
+			}
+		}
+		
+		public string Name {
+			get {
+				return "ignpics";
+			}
+		}
+	}
+
+	public class IgnoreShout : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Ignores ^= User.Ignore.Shout;
+			
+			if(currentInput.User.Ignores.HasFlag(User.Ignore.Shout)) {
+				currentInput.User.WriteLine("You are now ignoring shouts.");
+			} else {
+				currentInput.User.WriteLine("You will now hear shouts again.");
+			}
+		}
+		
+		public string Name {
+			get {
+				return "ignshout";
+			}
+		}
+	}
+
+	public class IgnoreTell : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{
+			currentInput.User.Ignores ^= User.Ignore.Tell;
+			
+			if(currentInput.User.Ignores.HasFlag(User.Ignore.Tell)) {
+				currentInput.User.WriteLine("You are now ignoring tells.");
+			} else {
+				currentInput.User.WriteLine("You will now hear tells again.");
+			}
+		}
+		
+		public string Name {
+			get {
+				return "igntell";
+			}
+		}
+	}
+
+	public class IgnoreList : ICommand
+	{
+		public void Run(UserInput currentInput)
+		{	
+			bool ignShouts = currentInput.User.Ignores.HasFlag(User.Ignore.Shout) | currentInput.User.Ignores.HasFlag(User.Ignore.All);
+			bool ignTells = currentInput.User.Ignores.HasFlag(User.Ignore.Tell) | currentInput.User.Ignores.HasFlag(User.Ignore.All);
+			bool ignLogons = currentInput.User.Ignores.HasFlag(User.Ignore.Logons) | currentInput.User.Ignores.HasFlag(User.Ignore.All);
+			bool ignPictures = currentInput.User.Ignores.HasFlag(User.Ignore.Pics) | currentInput.User.Ignores.HasFlag(User.Ignore.All);
+			bool ignGreets = currentInput.User.Ignores.HasFlag(User.Ignore.Greets) | currentInput.User.Ignores.HasFlag(User.Ignore.All);
+			bool ignBeeps = currentInput.User.Ignores.HasFlag(User.Ignore.Beeps) | currentInput.User.Ignores.HasFlag(User.Ignore.All);
+
+			string output = "\n+----------------------------------------------------------------------------+\n";
+			output += "| Your ignore states are as follows                                          |\n";
+			output += "+----------------------------------------------------------------------------+\n";
+			output += String.Format("| Ignoring shouts   : {0, -5} Ignoring tells  : {1, -5} Ignoring logons : {2, -5} |\n", ignShouts.ToYesNoString(), ignTells.ToYesNoString(), ignLogons.ToYesNoString());
+			output += String.Format("| Ignoring pictures : {0, -5} Ignoring greets : {1, -5} Ignoring beeps  : {2,-5} |\n", ignPictures.ToYesNoString(), ignGreets.ToYesNoString(), ignBeeps.ToYesNoString());
+			output += String.Format("+----------------------------------------------------------------------------+\n");
+
+			currentInput.User.WriteLine(output);
+		}
+		
+		public string Name {
+			get {
+				return "ignlist";
+			}
+		}
+	}
 }
 

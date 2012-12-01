@@ -71,7 +71,22 @@ namespace Talker.Commands
 			string output = String.Format("! {0} shouts: " + CurrentInput.Message + "\n", CurrentInput.User.Name);
 			string userOutput = String.Format("! You shout: " + CurrentInput.Message + "\n");
 
-			Server.WriteAllBut(output, new List<User>{ CurrentInput.User } );
+
+			List<User> WriteAllButUsers = new List<User>();
+
+			WriteAllButUsers.Add(CurrentInput.User);
+
+			Server.ClientList.ForEach(delegate(User currentUser) {
+				if(currentUser.Ignores.HasFlag(User.Ignore.Shout)
+				   || currentUser.Ignores.HasFlag(User.Ignore.All)) {
+					//The user has on an ignore, so don't write them
+					WriteAllButUsers.Add(currentUser);
+				}
+
+			});
+
+
+			Server.WriteAllBut(output, WriteAllButUsers );
 			CurrentInput.User.WriteLine(userOutput);
 			Server.ShoutConversation.Add(new UserCommuncationBuffer(DateTime.UtcNow, output, CurrentInput.User));
 		}
@@ -181,14 +196,19 @@ namespace Talker.Commands
 			if(userObjTo == null) {
 				CurrentInput.User.WriteLine("No such named \"" + userTo + "\"user.");
 			} else {
-				string toMessage = String.Format("{0} tells you: {1}",CurrentInput.User.Name, messageTo);
-				string fromMessage = String.Format("you tell {0}: {1}", userTo, messageTo);
+				if(!userObjTo.Ignores.HasFlag(User.Ignore.Tell) && !userObjTo.Ignores.HasFlag(User.Ignore.All)) {
+					string toMessage = String.Format("{0} tells you: {1}",CurrentInput.User.Name, messageTo);
+					string fromMessage = String.Format("you tell {0}: {1}", userTo, messageTo);
 
-				CurrentInput.User.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, fromMessage, userObjTo));
-				CurrentInput.User.WriteLine(fromMessage);
+					CurrentInput.User.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, fromMessage, userObjTo));
+					CurrentInput.User.WriteLine(fromMessage);
 
-				userObjTo.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, toMessage, CurrentInput.User));
-				userObjTo.WriteLine(toMessage);
+					userObjTo.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, toMessage, CurrentInput.User));
+					userObjTo.WriteLine(toMessage);
+				} else {
+					//TODO: with ranks wizs can over ride tell ignores??
+					CurrentInput.User.WriteLine(String.Format("{0} is ignoring tells at the moment.", userTo));
+				}
 			}
 		}
 
@@ -196,6 +216,48 @@ namespace Talker.Commands
 		{
 			get {
 				return "tell";
+			}
+		}
+	}
+
+	public class PrivateEmote : ICommand
+	{
+		public void Run(UserInput CurrentInput)
+		{
+			//TODO: usage for ICommand....
+			if(CurrentInput.Args.Length < 2) {
+				CurrentInput.User.WriteLine(".pemote <user> <text>");
+				return;
+			}
+			
+			string userTo = CurrentInput.Message.Substring(0, CurrentInput.Message.IndexOf(' '));
+			string messageTo = CurrentInput.Message.Substring(CurrentInput.Message.IndexOf(' '));
+			
+			User userObjTo = Server.FindClientByName(userTo);	
+			
+			if(userObjTo == null) {
+				CurrentInput.User.WriteLine("No such named \"" + userTo + "\"user.");
+			} else {
+				if(!userObjTo.Ignores.HasFlag(User.Ignore.Tell)) {
+					string toMessage = String.Format("> {0} {1}",CurrentInput.User.Name, messageTo);
+					string fromMessage = String.Format("> ({0}) {1}", userTo, messageTo);
+					
+					CurrentInput.User.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, fromMessage, userObjTo));
+					CurrentInput.User.WriteLine(fromMessage);
+					
+					userObjTo.TellBuffer.Add(new UserCommuncationBuffer(DateTime.UtcNow, toMessage, CurrentInput.User));
+					userObjTo.WriteLine(toMessage);
+				} else {
+					//TODO: with ranks wizs can over ride tell ignores??
+					CurrentInput.User.WriteLine("{0} is ignoring tells at the moment.");
+				}
+			}
+		}
+		
+		public string Name
+		{
+			get {
+				return "pemote";
 			}
 		}
 	}
@@ -372,7 +434,20 @@ namespace Talker.Commands
 			string picture = TalkerFile.GetFile(pictureName);
 						
 			if(!String.IsNullOrEmpty(picture)) {
-				currentInput.User.Room.WriteAllBut(String.Format("{0} shows the following picture..\n\n {1}\n\n",currentInput.User.Name, picture), new List<User> { currentInput.User });
+				List<User> WriteAllButUsers = new List<User>();
+				
+				WriteAllButUsers.Add(currentInput.User);
+				
+				Server.ClientList.ForEach(delegate(User currentUser) {
+					if(currentUser.Ignores.HasFlag(User.Ignore.Pics)
+					   || currentUser.Ignores.HasFlag(User.Ignore.All)) {
+						//The user has on an ignore, so don't write them
+						WriteAllButUsers.Add(currentUser);
+					}
+					
+				});
+
+				currentInput.User.Room.WriteAllBut(String.Format("{0} shows the following picture..\n\n {1}\n\n",currentInput.User.Name, picture), WriteAllButUsers);
 				currentInput.User.WriteLine(String.Format("You show the following picture..\n\n {0}\n",picture));
 			} else {
 				currentInput.User.WriteLine("Sorry, there is no picture with that name.");
@@ -404,18 +479,22 @@ namespace Talker.Commands
 			if(userObjTo == null) {
 				currentInput.User.WriteLine("No such named \"" + userTo + "\"user.");
 			} else {
-				string picture = TalkerFile.GetFile(pictureName);
+				if(!userObjTo.Ignores.HasFlag(User.Ignore.Pics) && userObjTo.Ignores.HasFlag(User.Ignore.All)) {
+					string picture = TalkerFile.GetFile(pictureName);
 
-				string fromMessage = "";
+					string fromMessage = "";
 
-				if(!String.IsNullOrEmpty(picture)) {
-					userObjTo.WriteLine(String.Format("{0} shows you the following picture..\n\n {1}\n",currentInput.User.Name, picture));
-					fromMessage = String.Format("You show the following picture to {0}\n\n {1}\n", userTo, picture);
+					if(!String.IsNullOrEmpty(picture)) {
+						userObjTo.WriteLine(String.Format("{0} shows you the following picture..\n\n {1}\n",currentInput.User.Name, picture));
+						fromMessage = String.Format("You show the following picture to {0}\n\n {1}\n", userTo, picture);
+					} else {
+						fromMessage = "Sorry, there is no picture with that name.\n\n";
+					}
+
+					currentInput.User.WriteLine(fromMessage);
 				} else {
-					fromMessage = "Sorry, there is no picture with that name.\n\n";
+					currentInput.User.WriteLine(String.Format("{0} is ignoring pictures at the moment", userTo));
 				}
-
-				currentInput.User.WriteLine(fromMessage);
 			}
 		}
 

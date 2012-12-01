@@ -26,7 +26,7 @@ namespace Talker
 			Assembly asm = Assembly.GetExecutingAssembly();
 
 			foreach (Type type in asm.GetTypes()) {
-				if(type.Namespace.Equals("Talker.Commands") 
+				if(type.Namespace != null && type.Namespace.Equals("Talker.Commands") 
 				   && type.IsClass
 				   && type.GetInterface("ICommand") != null) {
 

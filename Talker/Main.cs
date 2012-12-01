@@ -40,6 +40,18 @@ namespace Talker
 				UserObj.Room = Server.LoginRoom;
 				UserObj.Room.Users.Add(UserObj);
 
+				Server.ClientList.Add(UserObj);
+				clientThread.Start(UserObj);
+
+				List<User> WriteAllButUsers = new List<User>();
+
+				Server.ClientList.ForEach(delegate(User currentUser) {
+					if(currentUser.Ignores.HasFlag(User.Ignore.Logons)
+					   || currentUser.Ignores.HasFlag(User.Ignore.All)) {
+						WriteAllButUsers.Add(currentUser);
+					}
+				});
+
 				Server.CommandList.ForEach(delegate(ICommand command) {
 					if(command.Name.Equals("look")) {
 						UserInput newInput = new UserInput(UserObj, "look");
@@ -47,10 +59,7 @@ namespace Talker
 					}
 				});
 
-				Server.ClientList.Add(UserObj);
-				clientThread.Start(UserObj);
-
-				Server.WriteAll("[Entering is: " + UserObj.Name + " " + UserObj.Desc + " ] \n");
+				Server.WriteAllBut("[Entering is: " + UserObj.Name + " " + UserObj.Desc + " ] \n", WriteAllButUsers);
 			}
 		}
 
