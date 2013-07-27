@@ -1,0 +1,115 @@
+FB chat?
+
+won't impletment:
+
+fully matches:
+
+basic added:
+say
+help
+quit  
+who @ 
+desc
+emote :;
+tell
+version
+shout [
+revtell
+tell buffer (by user?)
+ctells
+ustat
+sing
+think
+
+next up:
+sayto -
+semote &!
+revshout
+examine
+echo +
+
+not even start:
+rules
+sos                                                                         
+accreq       
+charecho     
+cls          
+colour                       
+go
+look
+mode
+prompt              
+ranks
+read
+rmail
+set
+suicide             
+verify
+wizlist                          
+afk
+bank
+bfrom
+cafk
+calendar            
+call ,
+cash
+cbuff *
+cedit
+copyto              
+dmail
+donate
+entpro
+femote
+files
+flagged
+friends             
+from
+fsay
+fsmail
+fwho
+guess               
+hangman
+home
+ignall
+ignbeeps     igngreets           
+ignlist      ignlogons    ignpics      ignshout     igntell             
+ignuser      inmsg        invite       knock        last                
+listen
+macros       map          mutter       news                
+nocopys      outmsg       passwd       pemote </    preview    
+private      ptell        public       reload       revafk              
+revedit      review                  rnet                
+rooms        shoot                 smail               
+suggest        time         topic        uncall              
+uninvite             visit        wake         wipe                
+write                                                                   
+allclones
+beep
+bring
+cshout
+ctopic              
+fmail
+greet
+join         mybgone      mykey               
+mylock       myname       mypaint      myroom       netstat             
+picture      reminder     search                        
+show '       spodlist     system                                        
+addhistory   adminfiles   arrest       bcast        create              
+demote       ewiz         grepu        history      ignwiz              
+lban         monitor      move         muzzle       people              
+promote      resite       rstat        rsug         samesite            
+sfrom        site         tpromote     twiz         unarrest            
+unmuzzle     viewlog      wrules                                        
+ban          bbcast       cemote       chear        clearline           
+clone        cmdcount     cname        csay         destroy             
+gcom         invis        kill         lmail        makeinvis           
+makevis      money        myclones     netdata      rmadmin             
+save         setcmdlev    shackle      sreboot      swban               
+switch       unban        unshackle    vis          xcom       
+autopromo    connect      disconnect   dsug         dump                
+expire       fix          force        forwarding   logging             
+minlogin     nuke         purge        rcountu      reboot              
+recaps       recount      retire       rloadrm      shutdown            
+unfix
+unretire                                                   
+
