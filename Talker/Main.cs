@@ -33,7 +33,7 @@ namespace Talker
 			DateTime CurrentDateTime = DateTime.Now;
 
 			Console.WriteLine("------------------------------------------------------------------------------");
-			Console.WriteLine("{0} {1} server booting on {2} at {3}", CurrentServer.GetName().Name, ProductVersion, CurrentDateTime.ToLongDateString(), CurrentDateTime.TimeOfDay);
+			Console.WriteLine("{0} {1} server booting on {2} at {3}", CurrentServer.GetName().Name, ProductVersion, CurrentDateTime.ToLongDateString(), CurrentDateTime.ToLongTimeString());
 			Console.WriteLine("------------------------------------------------------------------------------");
 			Console.WriteLine("Node Name : {0}", System.Environment.MachineName);
 
