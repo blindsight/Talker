@@ -23,10 +23,22 @@ namespace Talker
 		{
 			int AddressPort = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["port"]);
 			int webSocketPort = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["webSocketPort"]);
+
 			//TODO: error message port must be above 1024
 			tcpListener = new TcpListener(IPAddress.Any, AddressPort);
 			listenThread = new Thread(new ThreadStart(ListenForClients));
 			listenThread.Start();
+			System.Reflection.Assembly CurrentServer = System.Reflection.Assembly.GetExecutingAssembly();
+			string ProductVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(CurrentServer.Location).ProductVersion;
+			DateTime CurrentDateTime = DateTime.Now;
+
+			Console.WriteLine("------------------------------------------------------------------------------");
+			Console.WriteLine("{0} {1} server booting on {2} at {3}", CurrentServer.GetName().Name, ProductVersion, CurrentDateTime.ToLongDateString(), CurrentDateTime.TimeOfDay);
+			Console.WriteLine("------------------------------------------------------------------------------");
+			Console.WriteLine("Node Name : {0}", System.Environment.MachineName);
+
+		
+			//Console.WriteLine("Running On : {0} {1}", (Is64) ? "x86_64": "x86" ,System.Environment.OSVersion.ToString());
 			Console.WriteLine("Started server at " + AddressPort);
 
 			SuperSocket.SocketBase.Config.RootConfig r = new SuperSocket.SocketBase.Config.RootConfig();
@@ -53,6 +65,10 @@ namespace Talker
 			ws.NewMessageReceived += new SessionHandler<WebSocketSession, string>(ws_NewMessageReceived);
 			ws.NewDataReceived += new SessionHandler<WebSocketSession, byte[]>(ws_NewDataReceived);
 			ws.Start();
+
+			Console.WriteLine("------------------------------------------------------------------------------");
+			Console.WriteLine("Booted with PID {0}", System.Diagnostics.Process.GetCurrentProcess().Id);
+			Console.WriteLine("------------------------------------------------------------------------------");
 		}
 
 		private static void ListenForClients()
