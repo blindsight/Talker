@@ -27,6 +27,25 @@ namespace Talker.Commands
 				CurrentInput.User.WriteLine(".name <new name>");
 				return;
 			}
+			//TODO: password
+
+			User userObj = Server.FindClientByName(CurrentInput.Args[1]);
+			if (userObj != null && userObj != CurrentInput.User) {//user already logged in
+				userObj.WriteLine("Logging in from Another Location");
+				//remove the user object of the newest logged in
+				//but overwrite with the newest data
+				               
+				//if (userObj.Logon > CurrentInput.User.Logon) {
+					//input user logged on first
+				//TODO: always copy over connections but sign the logon data from the oldest...
+					CurrentInput.User.JoinUser(userObj);
+				//} 
+
+				userObj.Room.Users.Remove(userObj);
+				Server.ClientList.Remove(userObj);
+
+			}
+
 
 			if(CurrentInput.User.Login(CurrentInput.Args[1]) == User.LoginResult.ValidLogin) {
 				CurrentInput.User.WriteLine("You are now logged in as \"" + CurrentInput.User.Name + "\"");
@@ -119,7 +138,7 @@ namespace Talker.Commands
 			foreach(User CurrentUser in Server.ClientList) {
 				TimeSpan minsOnline = commonTime - CurrentUser.Logon;
 				
-				whoLines += String.Format("| {0,-46} : {1,-15} : {2,-6} |\n", CurrentUser.Name + CurrentUser.Desc, CurrentUser.Room.Name, Math.Round(minsOnline.TotalMinutes));
+				whoLines += String.Format("| {0,-47} : {1,-15} : {2,-6} |\n", CurrentUser.Name + CurrentUser.Desc, CurrentUser.Room.Name, Math.Round(minsOnline.TotalMinutes));
 			}
 			
 			CurrentInput.User.Write(whoLines);
@@ -191,15 +210,17 @@ namespace Talker.Commands
 					CurrentUser = NewUser;
 				}
 			}
+		
 			TimeSpan OnlineFor = DateTime.UtcNow - CurrentUser.Logon;
 
-			string output = "+----- User Info ---------------------------------------------+\n";
+			string output = "+----- User Info ------------------------------------------------------------+\n";
 			string NameDesc = String.Format("{0} - {1} ",CurrentUser.Name, CurrentUser.Desc);
-			output += String.Format("Name   : {0,-30}                Level : \n", NameDesc);
-			output += String.Format("Gender : {0,-15} Age : {1, -15}  Online for : {2,-15} mins\n",CurrentUser.Gender, CurrentUser.Age, Math.Round(OnlineFor.TotalMinutes));
+			output += String.Format("Name   : {0,-30} Level : \n", NameDesc);
+			output += String.Format("Gender : {0,-14} Age : {1, -10}  Online for : {2,-15} mins\n",CurrentUser.Gender, CurrentUser.Age, Math.Round(OnlineFor.TotalMinutes));
 			output += String.Format("Email Address : {0}\n", CurrentUser.Email);
 			output += String.Format("Total Logins  : {0} \n", CurrentUser.TotalLogins);
 			output += "+----------------------------------------------------------------------------+\n";
+
 			CurrentInput.User.WriteLine(output);
 			/*
 +----- User Info -- (currently logged on) -----------------------------------+

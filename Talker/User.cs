@@ -8,13 +8,15 @@ using System.Text;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Data.SqlTypes;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 
 namespace Talker
 {
 	public class User
 	{
-		private TcpClient client;
 		private string name;
+		private ReadOnlyCollection<IUserConnection> connections;
 
 		public enum LoginResult {
 			ValidLogin,
@@ -35,10 +37,11 @@ namespace Talker
 			All = 4294967295 //max value for 32 bit int. The previous values need to be powers of two up to this value. which is 2^32
 		}
 
-		public User(TcpClient clientConnection, int clientIndex)
+		public User(List<IUserConnection> clientConnections, int clientIndex)
 		{
-			client = clientConnection;
-			name = "User " + clientIndex;
+			Connections = new ReadOnlyCollection<IUserConnection>(clientConnections);
+			//client = clientConnection;
+			name = "User_" + clientIndex;
 			this.Desc = " is a newbie needing a description. ";
 			this.TellBuffer = new List<UserCommuncationBuffer>();
 			this.TotalLogins = 0;
@@ -50,19 +53,17 @@ namespace Talker
 
 		public void Write(string clientText)
 		{
-			NetworkStream clientStream = client.GetStream();
-
-			if(clientStream.CanWrite) {
+			foreach (IUserConnection userConnection in this.Connections) {
 				clientText += "~RS"; //ALWAYS had RS to make sure color doesn't bleed
 				//this is the first idea I've got for color parsing.
 				//forevery color there willbe another look.. this could get processing heavy
 
-				if(this.ColorOption != Server.ColorOptions.ViewCodes) {
+				if (this.ColorOption != Server.ColorOptions.ViewCodes) {
 					string replaceValue = "";
 
-					foreach(KeyValuePair<string, string> colorCode in Server.ColorCodes) {
+					foreach (KeyValuePair<string, string> colorCode in Server.ColorCodes) {
 
-						if(this.ColorOption == Server.ColorOptions.On) {
+						if (this.ColorOption == Server.ColorOptions.On) {
 							replaceValue = colorCode.Value;
 						}
 
@@ -70,22 +71,13 @@ namespace Talker
 					}
 				}
 
-
-
-				byte[] writeText = Encoding.UTF8.GetBytes(clientText);
-
-				clientStream.Write(writeText, 0, writeText.Length);
+				userConnection.Write(clientText);
 			}
 		}
 
 		public void WriteLine(string clientText)
 		{
 			this.Write(clientText + "\n");
-		}
-
-		public NetworkStream Stream
-		{
-			get { return client.GetStream(); }
 		}
 
 		public void ChangeRoom(Room newRoom)
@@ -170,10 +162,51 @@ namespace Talker
 			}
 		}
 
+		public User JoinUser(User joinUser)
+		{
+			this.Age = joinUser.Age;
+			this.Desc = joinUser.Desc;
+			this.Email = joinUser.Email;
+			this.Gender = joinUser.Gender;
+			this.InMsg = joinUser.InMsg;
+			this.Ignores = joinUser.Ignores;
+			this.LastCommand = joinUser.LastCommand;
+			this.LastInput = joinUser.LastInput;
+			this.Logon = joinUser.Logon;
+			this.Name = joinUser.Name;
+			this.OutMsg = joinUser.OutMsg;
+
+			//TODO: notify room if different?
+
+			if (this.Room != joinUser.Room) {
+				this.ChangeRoom(joinUser.Room);
+			}
+
+			this.TellBuffer = joinUser.TellBuffer;
+			this.TotalLogins = joinUser.TotalLogins;
+
+			List<IUserConnection> userConnectionList = new List<IUserConnection>();
+			userConnectionList.AddRange(this.Connections);
+			userConnectionList.AddRange(joinUser.Connections);
+
+			foreach (IUserConnection currentConnection in userConnectionList) {
+				currentConnection.User = this;
+			}
+
+			this.Connections = new ReadOnlyCollection<IUserConnection>(userConnectionList);
+
+			return joinUser;
+		}
+
 		public void Quit()
 		{
+			//can we just quit a single connection?
+			foreach (IUserConnection userConnection in this.Connections) {
+				userConnection.Close();
+			}
+
+			Connections = new ReadOnlyCollection<IUserConnection>(new List<IUserConnection>());
 			//close but don't destory the object since there could still be references to the user still.
-			client.Close();
 		}
 
 		public string Name {
@@ -229,6 +262,19 @@ namespace Talker
 		public List<UserCommuncationBuffer> TellBuffer {
 			get;
 			protected set;
+		}
+
+		public ReadOnlyCollection<IUserConnection> Connections {
+			get {
+			//	lock (connectionsLock) {
+					return connections;
+			//	}
+			}
+			set {
+			//	lock (connectionsLock) {
+					connections = value;
+			//	}
+			}
 		}
 
 		public ICommand LastCommand {

@@ -18,7 +18,7 @@ namespace Talker.Commands
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
 			CurrentInput.User.WriteLine("|                           Your Talker's Name Here                          |");
 			CurrentInput.User.WriteLine("+----------------------------------------------------------------------------+");
-			CurrentInput.User.WriteLine(String.Format("| Total number of users    : {0}                             |", Server.ClientList.Count));
+			CurrentInput.User.WriteLine(String.Format("| Total number of users    : {0, -40} |", Server.ClientList.Count));
 			/*| Logons this current boot :    1 new users,    1 old users                  |
 				| Total number of users    : 3     Maximum online users     : 50             |
 					| Total number of rooms    : 15    Swear ban currently on   : OFF            |

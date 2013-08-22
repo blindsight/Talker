@@ -131,6 +131,24 @@ namespace Talker
 			return null;
 		}
 
+		public static User FindClientBySessionId(string SessionId)
+		{
+			foreach(User CurrentUser in ClientList) {
+				foreach (IUserConnection UserConnection in CurrentUser.Connections) {
+					if (UserConnection.Type == UserConnectionTypes.WebSocket) {
+						WebSocketUserCommunication UserCommunication = (WebSocketUserCommunication)UserConnection;
+
+						if (UserCommunication.SessionId() == SessionId) {
+							return CurrentUser;
+						}
+					}
+
+				}
+			}
+
+			return null;
+		}
+
 		public static Room FindRoomByName(string roomName)
 		{
 			//I'm doing this as a method b/c in the future I'll have to look for rooms only in the db
