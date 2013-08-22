@@ -22,6 +22,7 @@ namespace Talker
 		public static void Main(string[] args)
 		{
 			int AddressPort = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["port"]);
+			int webSocketPort = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["webSocketPort"]);
 			//TODO: error message port must be above 1024
 			tcpListener = new TcpListener(IPAddress.Any, AddressPort);
 			listenThread = new Thread(new ThreadStart(ListenForClients));
@@ -32,9 +33,8 @@ namespace Talker
 
 			SuperSocket.SocketBase.Config.ServerConfig s = new SuperSocket.SocketBase.Config.ServerConfig();
 			s.Name = "SuperWebSocket";
-			//s.ServiceName = "SuperWebSocket";
 			s.Ip = "Any";
-			s.Port = 8089;
+			s.Port = webSocketPort;
 			s.Mode = SocketMode.Tcp;
 
 			SuperSocket.SocketEngine.SocketServerFactory f = new SuperSocket.SocketEngine.SocketServerFactory();
