@@ -21,6 +21,12 @@ namespace Talker
 
 		public static void Main(string[] args)
 		{
+			// Check if the config file is correctly loaded
+			if (System.Configuration.ConfigurationManager.AppSettings.Count == 0) {
+				Console.WriteLine("ERROR: config file not loaded");
+				return;
+			}
+
 			int AddressPort = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["port"]);
 			int webSocketPort = Convert.ToInt16(System.Configuration.ConfigurationManager.AppSettings["webSocketPort"]);
 
