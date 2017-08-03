@@ -50,6 +50,9 @@
       <HintPath>..\packages\SuperWebSocket\SuperWebSocket.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Json">
+      <HintPath>..\..\..\..\..\..\Library\Frameworks\Mono.framework\Versions\3.2.0\lib\mono\4.5\System.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

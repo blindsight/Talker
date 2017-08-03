@@ -1,4 +1,5 @@
 using System;
+using System.Json;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Net.Sockets;
@@ -71,7 +72,15 @@ namespace Talker
 					}
 				}
 
-				userConnection.Write(clientText);
+				if (userConnection.Type == UserConnectionTypes.WebSocket) {
+					JsonObject JObject = new JsonObject();
+					JsonValue jsonText = new JsonValue();
+
+					JObject.Add("chat", clientText);
+					userConnection.Write(JObject);
+				} else {
+					userConnection.Write(clientText);
+				}
 			}
 		}
 
@@ -266,14 +275,10 @@ namespace Talker
 
 		public ReadOnlyCollection<IUserConnection> Connections {
 			get {
-			//	lock (connectionsLock) {
 					return connections;
-			//	}
 			}
 			set {
-			//	lock (connectionsLock) {
 					connections = value;
-			//	}
 			}
 		}
 
